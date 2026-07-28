@@ -1,0 +1,26 @@
+# Official cloned repository (users should clone manually)
+kronos_lib/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Large model binaries & safetensors
+*.bin
+*.pth
+*.pt
+*.safetensors
+*.onnx
+
+# System & IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
