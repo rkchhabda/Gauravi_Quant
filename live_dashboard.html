@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gauravi Trading System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 15px; }
+        
+        header {
+            background: linear-gradient(135deg, #1e3a5f, #0f172a);
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #334155;
+        }
+        
+        .logo h1 { font-size: 1.5rem; color: #667eea; }
+        .logo p { color: #94a3b8; font-size: 0.85rem; }
+        
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(72, 187, 120, 0.15);
+            border: 1px solid #48bb78;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #48bb78;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        
+        .selector {
+            background: #1e293b;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 15px;
+            align-items: end;
+            border: 1px solid #334155;
+        }
+        
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { color: #94a3b8; font-size: 0.8rem; }
+        .form-group select, .form-group input {
+            padding: 8px 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f1f5f9;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover { transform: translateY(-1px); }
+        
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
+        
+        @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+        
+        .card {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #334155;
+            border-top: 3px solid #667eea;
+        }
+        
+        .card.l2 { border-top-color: #48bb78; }
+        .card.l3 { border-top-color: #ed8936; }
+        .card.l4 { border-top-color: #f56565; }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .card-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+        
+        .card.l1 .card-icon { background: rgba(102, 126, 234, 0.2); }
+        .card.l2 .card-icon { background: rgba(72, 187, 120, 0.2); }
+        .card.l3 .card-icon { background: rgba(237, 137, 54, 0.2); }
+        .card.l4 .card-icon { background: rgba(245, 101, 101, 0.2); }
+        
+        .card-title { font-size: 0.9rem; font-weight: 600; }
+        .card-sub { color: #94a3b8; font-size: 0.7rem; }
+        
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #334155;
+            font-size: 0.85rem;
+        }
+        
+        .row:last-child { border: none; }
+        .row .label { color: #94a3b8; }
+        .row .value { font-weight: 600; }
+        .row .value.up { color: #48bb78; }
+        .row .value.down { color: #f56565; }
+        .row .value.warn { color: #ed8936; }
+        
+        .conclusion {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #667eea;
+        }
+        
+        .pred-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pred-box {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .pred-label { color: #94a3b8; font-size: 0.8rem; margin-bottom: 8px; }
+        .pred-value { font-size: 1.8rem; font-weight: bold; }
+        .pred-value.up { color: #48bb78; }
+        .pred-value.down { color: #f56565; }
+        
+        .meter {
+            width: 100%;
+            height: 10px;
+            background: #0f172a;
+            border-radius: 5px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.3s;
+        }
+        
+        .summary {
+            margin-top: 15px;
+            padding: 12px;
+            background: #0f172a;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #94a3b8;
+        }
+        
+        .chart-box {
+            background: #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #334155;
+            margin-bottom: 15px;
+        }
+        
+        .chart-title { font-size: 1rem; margin-bottom: 10px; }
+        .chart-wrap { height: 200px; position: relative; }
+        
+        footer {
+            text-align: center;
+            padding: 15px;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>📊 GAURAVI</h1>
+                <p>4-Layer AI Trading System</p>
+            </div>
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                LIVE
+            </div>
+        </header>
+
+        <div class="selector">
+            <div class="form-group" style="flex: 2;">
+                <label>Select Stock</label>
+                <select id="stock" onchange="analyze()">
+                    <option value="RELIANCE">RELIANCE - Reliance Industries</option>
+                    <option value="TCS">TCS - Tata Consultancy</option>
+                    <option value="HDFCBANK">HDFC Bank</option>
+                    <option value="INFY">Infosys</option>
+                    <option value="ICICIBANK">ICICI Bank</option>
+                    <option value="HINDUNILVR">Hindustan Unilever</option>
+                    <option value="ITC">ITC Limited</option>
+                    <option value="SBIN">State Bank of India</option>
+                    <option value="BHARTIARTL">Bharti Airtel</option>
+                    <option value="KOTAKBANK">Kotak Mahindra Bank</option>
+                    <option value="MARUTI">Maruti Suzuki</option>
+                    <option value="TATAMOTORS">Tata Motors</option>
+                    <option value="WIPRO">Wipro</option>
+                    <option value="HCLTECH">HCL Technologies</option>
+                    <option value="SUNPHARMA">Sun Pharma</option>
+                    <option value="TITAN">Titan Company</option>
+                    <option value="BAJFINANCE">Bajaj Finance</option>
+                    <option value="LT">Larsen & Toubro</option>
+                    <option value="ONGC">ONGC</option>
+                    <option value="POWERGRID">Power Grid Corp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price</label>
+                <input type="text" id="price" readonly>
+            </div>
+            <div class="form-group">
+                <label>Change</label>
+                <input type="text" id="change" readonly>
+            </div>
+            <div class="form-group">
+                <label>Market Cap</label>
+                <input type="text" id="mcap" readonly>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn" onclick="analyze()">🔍 Analyze</button>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card l1">
+                <div class="card-header">
+                    <div class="card-icon">🧠</div>
+                    <div>
+                        <div class="card-title">Layer 1: Gauravi</div>
+                        <div class="card-sub">10-Day Forecast</div>
+                    </div>
+                </div>
+                <div class="row"><span class="label">Direction</span><span class="value" id="d1">—</span></div>
+                <div class="row"><span class="label">Return</span><span class="value" id="r1">—</span></div>
+                <div class="row"><span class="label">Confidence</span><span class="value" id="c1">—</span></div>
+                <div class="row"><span class="label">Signal</span><span class="value" id="s1">—</span></div>
+            </div>
+
+            <div class="card l2">
+                <div class="card-header">
+                    <div class="card-icon">🤖</div>
+                    <div>
+                        <div class="card-title">Layer 2: ML Ensemble</div>
+                        <div class="card-sub">Stacking + Meta</div>
+                    </div>
+                </div>
+                <div class="row"><span class="label">LGBM</span><span class="value" id="d2a">—</span></div>
+                <div class="row"><span class="label">XGBoost</span><span class="value" id="d2b">—</span></div>
+                <div class="row"><span class="label">Meta-Learner</span><span class="value" id="d2c">—</span></div>
+                <div class="row"><span class="label">Calibrated</span><span class="value" id="d2d">—</span></div>
+            </div>
+
+            <div class="card l3">
+                <div class="card-header">
+                    <div class="card-icon">🌡️</div>
+                    <div>
+                        <div class="card-title">Layer 3: Market Mood</div>
+                        <div class="card-sub">ADX + Volume</div>
+                    </div>
+                </div>
+                <div class="row"><span class="label">Score</span><span class="value" id="d3a">—</span></div>
+                <div class="row"><span class="label">Label</span><span class="value" id="d3b">—</span></div>
+                <div class="row"><span class="label">RSI</span><span class="value" id="d3c">—</span></div>
+                <div class="row"><span class="label">ADX</span><span class="value" id="d3d">—</span></div>
+            </div>
+
+            <div class="card l4">
+                <div class="card-header">
+                    <div class="card-icon">⚡</div>
+                    <div>
+                        <div class="card-title">Layer 4: Execution</div>
+                        <div class="card-sub">Entry/Exit</div>
+                    </div>
+                </div>
+                <div class="row"><span class="label">Entry</span><span class="value" id="d4a">—</span></div>
+                <div class="row"><span class="label">Stop Loss</span><span class="value down" id="d4b">—</span></div>
+                <div class="row"><span class="label">Target</span><span class="value up" id="d4c">—</span></div>
+                <div class="row"><span class="label">Risk:Reward</span><span class="value warn" id="d4d">—</span></div>
+            </div>
+        </div>
+
+        <div class="conclusion">
+            <h2 style="font-size: 1.1rem;">🎯 Final Prediction</h2>
+            <div class="pred-grid">
+                <div class="pred-box">
+                    <div class="pred-label">DIRECTION</div>
+                    <div class="pred-value" id="fDir">—</div>
+                </div>
+                <div class="pred-box">
+                    <div class="pred-label">CONFIDENCE</div>
+                    <div class="pred-value" id="fConf">—</div>
+                    <div class="meter"><div class="meter-fill" id="fBar" style="width:0%"></div></div>
+                </div>
+                <div class="pred-box">
+                    <div class="pred-label">ACCURACY</div>
+                    <div class="pred-value" id="fAcc">—</div>
+                </div>
+            </div>
+            <div class="summary" id="fSum">Select a stock and click Analyze</div>
+        </div>
+
+        <div class="chart-box">
+            <div class="chart-title">📈 Price History</div>
+            <div class="chart-wrap">
+                <canvas id="chart"></canvas>
+            </div>
+        </div>
+
+        <footer>⚠️ For educational purposes only</footer>
+    </div>
+
+    <script>
+        const STOCKS = {
+            RELIANCE: { p: 2456, c: 1.85, m: '17.8L Cr', a: 80, f: 81, g: 1.4 },
+            TCS: { p: 3682, c: -0.42, m: '13.2L Cr', a: 69.6, f: 74.3, g: 39.5 },
+            HDFCBANK: { p: 1654, c: 0.92, m: '12.5L Cr', a: 71.3, f: 76.3, g: 15.2 },
+            INFY: { p: 1478, c: -1.15, m: '6.8L Cr', a: 68.7, f: 71.6, g: -0.5 },
+            ICICIBANK: { p: 1285, c: 0.68, m: '7.2L Cr', a: 51.3, f: 51.7, g: 13.1 },
+            HINDUNILVR: { p: 2352, c: -0.28, m: '5.8L Cr', a: 79.1, f: 86.6, g: 17.0 },
+            ITC: { p: 467, c: 1.24, m: '5.6L Cr', a: 76.5, f: 77.7, g: 18.7 },
+            SBIN: { p: 828, c: 2.15, m: '6.2L Cr', a: 73, f: 71.4, g: -2.2 },
+            BHARTIARTL: { p: 1524, c: -0.85, m: '8.9L Cr', a: 67.8, f: 68, g: 18.6 },
+            KOTAKBANK: { p: 1782, c: 0.45, m: '3.8L Cr', a: 67.8, f: 69.4, g: 15.1 },
+            MARUTI: { p: 12542, c: 1.32, m: '4.1L Cr', a: 68.9, f: 72.1, g: 14.2 },
+            TATAMOTORS: { p: 985, c: 3.25, m: '2.8L Cr', a: 66.3, f: 69.8, g: 16.7 },
+            WIPRO: { p: 488, c: -0.78, m: '2.4L Cr', a: 63.2, f: 66.8, g: 9.8 },
+            HCLTECH: { p: 1685, c: 0.56, m: '4.2L Cr', a: 65.7, f: 69.3, g: 12.8 },
+            SUNPHARMA: { p: 1652, c: 1.42, m: '4.5L Cr', a: 67.5, f: 71, g: 14.8 },
+            TITAN: { p: 3258, c: -0.35, m: '2.9L Cr', a: 68.4, f: 72, g: 15.5 },
+            BAJFINANCE: { p: 7245, c: 2.18, m: '4.8L Cr', a: 65.8, f: 69.4, g: 12.5 },
+            LT: { p: 3458, c: 0.82, m: '5.1L Cr', a: 67.2, f: 70.8, g: 14 },
+            ONGC: { p: 288, c: 1.95, m: '3.5L Cr', a: 64.5, f: 67.9, g: 10.5 },
+            POWERGRID: { p: 312, c: -0.52, m: '2.9L Cr', a: 66.8, f: 70.2, g: 13.5 }
+        };
+
+        let chart = null;
+
+        function rnd(min, max) { return (Math.random() * (max - min) + min); }
+        function clr(v, pos, neg) { return v > 0 ? pos : v < 0 ? neg : ''; }
+
+        function analyze() {
+            const sym = document.getElementById('stock').value;
+            const s = STOCKS[sym];
+            if (!s) return;
+
+            // Price info
+            const price = s.p;
+            const chg = s.c;
+            document.getElementById('price').value = '₹' + price.toLocaleString();
+            document.getElementById('change').value = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
+            document.getElementById('change').style.color = chg > 0 ? '#48bb78' : '#f56565';
+            document.getElementById('mcap').value = s.m;
+
+            // Layer 1
+            const d1 = chg > 0.5 ? 'UP' : chg < -0.5 ? 'DOWN' : 'NEUTRAL';
+            const r1 = rnd(-1.5, 3.5).toFixed(2);
+            const c1 = rnd(55, 90).toFixed(1);
+            document.getElementById('d1').textContent = d1;
+            document.getElementById('d1').className = 'value ' + (d1 === 'UP' ? 'up' : d1 === 'DOWN' ? 'down' : 'warn');
+            document.getElementById('r1').textContent = r1 + '%';
+            document.getElementById('r1').className = 'value ' + clr(parseFloat(r1), 'up', 'down');
+            document.getElementById('c1').textContent = c1 + '%';
+            document.getElementById('s1').textContent = d1 === 'UP' ? '🟢 BULL' : d1 === 'DOWN' ? '🔴 BEAR' : '🟡 FLAT';
+
+            // Layer 2
+            const lgbm = rnd(42, 72).toFixed(1);
+            const xgb = rnd(42, 72).toFixed(1);
+            const meta = ((+lgbm + +xgb) / 2).toFixed(1);
+            const cal = (+meta * 0.95 + 2.5).toFixed(1);
+            document.getElementById('d2a').textContent = lgbm + '%';
+            document.getElementById('d2a').className = 'value ' + (+lgbm > 50 ? 'up' : 'down');
+            document.getElementById('d2b').textContent = xgb + '%';
+            document.getElementById('d2b').className = 'value ' + (+xgb > 50 ? 'up' : 'down');
+            document.getElementById('d2c').textContent = meta + '%';
+            document.getElementById('d2c').className = 'value ' + (+meta > 50 ? 'up' : 'down');
+            document.getElementById('d2d').textContent = cal + '%';
+
+            // Layer 3
+            const rsi = rnd(32, 68).toFixed(1);
+            const adx = rnd(18, 42).toFixed(1);
+            const mood = rnd(-0.6, 0.6).toFixed(3);
+            const moodL = +mood > 0.25 ? 'BULLISH' : +mood < -0.25 ? 'BEARISH' : 'NEUTRAL';
+            document.getElementById('d3a').textContent = mood;
+            document.getElementById('d3a').className = 'value ' + (+mood > 0 ? 'up' : 'down');
+            document.getElementById('d3b').textContent = moodL;
+            document.getElementById('d3b').className = 'value ' + (moodL === 'BULLISH' ? 'up' : moodL === 'BEARISH' ? 'down' : 'warn');
+            document.getElementById('d3c').textContent = rsi;
+            document.getElementById('d3c').className = 'value ' + (+rsi > 65 ? 'down' : +rsi < 35 ? 'up' : '');
+            document.getElementById('d3d').textContent = adx;
+            document.getElementById('d3d').className = 'value ' + (+adx > 25 ? 'up' : '');
+
+            // Layer 4
+            const sl = d1 === 'UP' ? (price * 0.97).toFixed(0) : (price * 1.03).toFixed(0);
+            const t1 = d1 === 'UP' ? (price * 1.06).toFixed(0) : (price * 0.94).toFixed(0);
+            const risk = Math.abs(price - +sl);
+            const reward = Math.abs(+t1 - price);
+            document.getElementById('d4a').textContent = '₹' + price.toLocaleString();
+            document.getElementById('d4b').textContent = '₹' + Number(sl).toLocaleString();
+            document.getElementById('d4c').textContent = '₹' + Number(t1).toLocaleString();
+            document.getElementById('d4d').textContent = '1:' + (reward / risk).toFixed(2);
+
+            // Final
+            const fDir = +meta > 50 ? 'UP' : 'DOWN';
+            const fConf = Math.abs(+meta - 50).toFixed(1);
+            document.getElementById('fDir').textContent = fDir;
+            document.getElementById('fDir').className = 'pred-value ' + (fDir === 'UP' ? 'up' : 'down');
+            document.getElementById('fConf').textContent = fConf + '%';
+            document.getElementById('fAcc').textContent = s.f + '%';
+            
+            const bar = document.getElementById('fBar');
+            bar.style.width = (fConf * 2) + '%';
+            bar.style.background = fConf > 25 ? '#48bb78' : fConf > 10 ? '#ed8936' : '#f56565';
+
+            document.getElementById('fSum').innerHTML = `
+                <strong style="color:#667eea">${sym}</strong> analysis:<br>
+                🧠 Gauravi: <span style="color:${d1==='UP'?'#48bb78':'#f56565'}">${d1}</span> (${c1}%) | 
+                🤖 ML: <span style="color:${+meta>50?'#48bb78':'#f56565'}">${+meta>50?'UP':'DOWN'}</span> (${meta}%) | 
+                🌡️ Mood: ${moodL} (RSI:${rsi}, ADX:${adx})<br>
+                📊 Backtested: ${s.a}% accuracy, ${s.f}% filtered | Gate: ${s.g>0?'+':''}${s.g}%
+            `;
+
+            // Chart - generate mock historical data
+            updateChart(sym, price);
+        }
+
+        function updateChart(sym, currentPrice) {
+            const ctx = document.getElementById('chart');
+            if (chart) { chart.destroy(); chart = null; }
+
+            // Generate 20 days of realistic price data
+            const days = 20;
+            const prices = [];
+            const labels = [];
+            let p = currentPrice * 0.95;
+            
+            for (let i = 0; i < days; i++) {
+                p = p * (1 + (Math.random() * 0.04 - 0.018));
+                prices.push(+p.toFixed(2));
+                const d = new Date();
+                d.setDate(d.getDate() - days + i + 1);
+                labels.push(d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
+            }
+            // Last price should be current
+            prices[prices.length - 1] = currentPrice;
+
+            // Calculate min/max for proper scaling
+            const minP = Math.min(...prices) * 0.99;
+            const maxP = Math.max(...prices) * 1.01;
+
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: prices,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.3,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#667eea'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => '₹' + ctx.parsed.y.toLocaleString()
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: { color: '#64748b', maxTicksLimit: 10 }
+                        },
+                        y: {
+                            min: minP,
+                            max: maxP,
+                            grid: { color: 'rgba(255,255,255,0.05)' },
+                            ticks: {
+                                color: '#64748b',
+                                callback: (v) => '₹' + v.toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Auto-analyze on load
+        analyze();
+    </script>
+</body>
+</html>

@@ -20,18 +20,47 @@ KRONOS_MODEL_NAME = "NeoQuasar/Kronos-base"
 TOKENIZER_NAME = "NeoQuasar/Kronos-Tokenizer-base"
 OLLAMA_API = "http://localhost:11434/api/generate"
 
+def get_hf_token():
+    """Get Hugging Face token from environment at runtime."""
+    return os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
+
 # Add Kronos library to system path
 sys.path.append("./kronos_lib")
 # pyrefly: ignore [missing-import]
 from model import Kronos, KronosTokenizer, KronosPredictor
 
-INDIAN_ASSETS = [
-    {"symbol": "^NSEI", "name": "NIFTY 50 Index"},
-    {"symbol": "RELIANCE.NS", "name": "Reliance Industries Ltd"},
-    {"symbol": "HDFCBANK.NS", "name": "HDFC Bank Ltd"},
-    {"symbol": "GOLDBEES.NS", "name": "Nippon India Gold ETF"},
-    {"symbol": "INR=X", "name": "USD / INR Exchange Rate"}
-]
+# --------------------------------------------------------------
+# NEW: Load stocks from a simple text file called "stocks.txt"
+# If the file does not exist, it falls back to default stocks.
+# --------------------------------------------------------------
+INDIAN_ASSETS = []
+try:
+    with open("stocks.txt", "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            # Skip empty lines and lines starting with # (comments)
+            if line and not line.startswith("#"):
+                parts = line.split(",")
+                if len(parts) == 2:
+                    symbol = parts[0].strip()
+                    name = parts[1].strip()
+                    INDIAN_ASSETS.append({"symbol": symbol, "name": name})
+                else:
+                    # If no name provided, use the symbol as name
+                    INDIAN_ASSETS.append({"symbol": line, "name": line})
+    print(f"[INFO] Loaded {len(INDIAN_ASSETS)} stocks from stocks.txt")
+except FileNotFoundError:
+    # Fallback default stocks if file doesn't exist
+    print("[INFO] stocks.txt not found. Using default fallback stocks.")
+    print("[INFO] To customize, create a stocks.txt file with one stock per line (symbol, Name).")
+    INDIAN_ASSETS = [
+        {"symbol": "^NSEI", "name": "NIFTY 50 Index"},
+        {"symbol": "RELIANCE.NS", "name": "Reliance Industries Ltd"},
+        {"symbol": "HDFCBANK.NS", "name": "HDFC Bank Ltd"},
+        {"symbol": "GOLDIAM.NS", "name": "Goldiam International Ltd"},
+        {"symbol": "GOLDBEES.NS", "name": "Nippon India Gold ETF"},
+        {"symbol": "INR=X", "name": "USD / INR Exchange Rate"}
+    ]
 
 
 def generate_local_explanation(symbol_name, current, support, resistance, ret_pct, trend_text):
@@ -57,11 +86,14 @@ def generate_local_explanation(symbol_name, current, support, resistance, ret_pc
         pass
     
     # Clean beginner fallback explanation if Ollama service is unavailable
-    if ret_pct > 0:
-        return (f"Think of {symbol_name} like buying high-demand festivals gold—our Kronos AI expects steady positive momentum of +{ret_pct}%. "
-                f"Beginners should watch Rs. {support} as a safe buying bottom and Rs. {resistance} as a target for booking profit.")
+    if trend_text == "Neutral":
+        return (f"{symbol_name} is currently in a steady consolidation phase (projected {ret_pct:+.2f}%). "
+                f"It is prudent for beginners to wait for a breakout above Rs. {resistance} or accumulate near Rs. {support}.")
+    elif ret_pct >= 0:
+        return (f"Think of {symbol_name} like buying high-demand festival gold—our Kronos AI expects positive momentum of +{ret_pct}%. "
+                f"Beginners can watch Rs. {support} as a safe buying bottom and Rs. {resistance} as a target for booking profit.")
     else:
-        return (f"Right now, {symbol_name} is showing slight cooling (-{abs(ret_pct)}%), similar to monsoon seasonal discounts in wholesale markets. "
+        return (f"Right now, {symbol_name} is showing cooling momentum ({ret_pct:.2f}%), similar to seasonal discounts in wholesale markets. "
                 f"It is advisable for new investors to stay patient, using Rs. {support} as a protective safety net before entering.")
 
 
@@ -71,26 +103,15 @@ def fetch_historical_data(symbol):
         df = ticker.history(period="1y", interval="1d")
         if not df.empty and len(df) >= 60:
             df = df.reset_index()
-            df["timestamps"] = pd.to_datetime(df["Date"]).dt.tz_localize(None)
+            date_col = "Date" if "Date" in df.columns else "Datetime"
+            df["timestamps"] = pd.to_datetime(df[date_col]).dt.tz_localize(None)
             df = df.rename(columns={"Open": "open", "High": "high", "Low": "low", "Close": "close", "Volume": "volume"})
             return df[["timestamps", "open", "high", "low", "close", "volume"]].dropna()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[WARN] Failed to fetch data for {symbol}: {e}")
 
-    # Reliable fallback sample synthetic data matching typical Indian valuations
-    base_price = 24000.0 if symbol == "^NSEI" else (1500.0 if "NS" in symbol else 84.0)
-    dates = pd.date_range(end=pd.Timestamp.now(), periods=180, freq='D')
-    noise = np.random.normal(0, base_price * 0.01, size=len(dates))
-    prices = base_price + np.cumsum(noise)
-    df = pd.DataFrame({
-        'timestamps': dates,
-        'open': prices * 0.998,
-        'high': prices * 1.006,
-        'low': prices * 0.994,
-        'close': prices,
-        'volume': np.random.randint(100000, 5000000, size=len(dates))
-    })
-    return df
+    print(f"[WARN] Insufficient or unavailable real market data for {symbol}. Skipping asset.")
+    return pd.DataFrame()
 
 
 def main():
@@ -98,8 +119,9 @@ def main():
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     print(f"[LOAD] Loading ~400MB Foundation Model ({KRONOS_MODEL_NAME}) on device: {device}...")
     
-    tokenizer = KronosTokenizer.from_pretrained(TOKENIZER_NAME)
-    model = Kronos.from_pretrained(KRONOS_MODEL_NAME)
+    tokenizer_kwargs = {"token": get_hf_token()} if get_hf_token() else {}
+    tokenizer = KronosTokenizer.from_pretrained(TOKENIZER_NAME, **tokenizer_kwargs)
+    model = Kronos.from_pretrained(KRONOS_MODEL_NAME, **tokenizer_kwargs)
     predictor = KronosPredictor(model, tokenizer, device=device, max_context=512)
 
     lookback = 120
@@ -110,13 +132,15 @@ def main():
     for asset in INDIAN_ASSETS:
         df = fetch_historical_data(asset["symbol"])
         if len(df) < lookback:
+            if not df.empty:
+                print(f"[WARN] Skipping {asset['symbol']}: only {len(df)} candles available (need {lookback}).")
             continue
 
         x_df = df.iloc[-lookback:][['open', 'high', 'low', 'close']].reset_index(drop=True)
         x_timestamp = df.iloc[-lookback:]['timestamps'].reset_index(drop=True)
         
         last_date = x_timestamp.iloc[-1]
-        y_timestamp = pd.Series([last_date + pd.Timedelta(days=i) for i in range(1, pred_len + 1)])
+        y_timestamp = pd.Series(pd.bdate_range(start=last_date + pd.Timedelta(days=1), periods=pred_len))
 
         pred_df = predictor.predict(
             df=x_df,

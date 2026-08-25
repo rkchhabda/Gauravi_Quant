@@ -1,0 +1,52 @@
+BSE.NS, BSE Ltd
+^NSEI, NIFTY 50 Index
+ADANIENT.NS, Adani Enterprises Ltd
+ADANIPORTS.NS, Adani Ports and Special Economic Zone Ltd
+APOLLOHOSP.NS, Apollo Hospitals Enterprise Ltd
+ASIANPAINT.NS, Asian Paints Ltd
+AXISBANK.NS, Axis Bank Ltd
+BAJAJ-AUTO.NS, Bajaj Auto Ltd
+BAJAJFINSV.NS, Bajaj Finserv Ltd
+BAJFINANCE.NS, Bajaj Finance Ltd
+BEL.NS, Bharat Electronics Ltd
+BHARTIARTL.NS, Bharti Airtel Ltd
+CIPLA.NS, Cipla Ltd
+COALINDIA.NS, Coal India Ltd
+DRREDDY.NS, Dr. Reddy's Laboratories Ltd
+EICHERMOT.NS, Eicher Motors Ltd
+DIVISLAB.NS, Divi's Laboratories Ltd
+GRASIM.NS, Grasim Industries Ltd
+HCLTECH.NS, HCL Technologies Ltd
+HDFCBANK.NS, HDFC Bank Ltd
+HDFCLIFE.NS, HDFC Life Insurance Company Ltd
+HINDALCO.NS, Hindalco Industries Ltd
+HINDUNILVR.NS, Hindustan Unilever Ltd
+ICICIBANK.NS, ICICI Bank Ltd
+INDIGO.NS, InterGlobe Aviation Ltd
+INFY.NS, Infosys Ltd
+ITC.NS, ITC Ltd
+JIOFIN.NS, Jio Financial Services Ltd
+JSWSTEEL.NS, JSW Steel Ltd
+KOTAKBANK.NS, Kotak Mahindra Bank Ltd
+LT.NS, Larsen & Toubro Ltd
+M&M.NS, Mahindra & Mahindra Ltd
+MARUTI.NS, Maruti Suzuki India Ltd
+MAXHEALTH.NS, Max Healthcare Institute Ltd
+NESTLEIND.NS, Nestle India Ltd
+NTPC.NS, NTPC Ltd
+ONGC.NS, Oil & Natural Gas Corporation Ltd
+POWERGRID.NS, Power Grid Corporation of India Ltd
+RELIANCE.NS, Reliance Industries Ltd
+SBILIFE.NS, SBI Life Insurance Company Ltd
+SBIN.NS, State Bank of India
+SHRIRAMFIN.NS, Shriram Finance Ltd
+SUNPHARMA.NS, Sun Pharmaceutical Industries Ltd
+TATACONSUM.NS, Tata Consumer Products Ltd
+TATASTEEL.NS, Tata Steel Ltd
+TCS.NS, Tata Consultancy Services Ltd
+TECHM.NS, Tech Mahindra Ltd
+TITAN.NS, Titan Company Ltd
+HEROMOTOCO.NS, Hero MotoCorp Ltd
+TRENT.NS, Trent Ltd
+ULTRACEMCO.NS, UltraTech Cement Ltd
+WIPRO.NS, Wipro Ltd

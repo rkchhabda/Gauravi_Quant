@@ -75,6 +75,32 @@ Validate Kronos-base predictive directional reliability by backtesting recent hi
 python proof_test.py
 ```
 
+### Pooled Factor Model Research
+Leakage-safe pooled cross-sectional model over NIFTY 100 stocks:
+```powershell
+python pooled_model_v1.py --period 5y --model xgb --horizon 10
+python factor_ic_analysis.py
+python composite_factor_strategy.py
+```
+
+### Random-20 Backtest
+Backtests the liquidity+reversal composite on 20 randomly chosen NIFTY-100 stocks from a given date:
+```powershell
+python backtest_random20.py --seed 42 --top-k 5 --cost-bps 10
+```
+
+---
+
+## ⚠️ Realistic Accuracy Expectations
+
+This project is for **research and educational purposes only**. Honest out-of-sample validation on real NSE data (see `accuracy_log.md`) shows:
+
+- **15-minute directional prediction**: no predictive signal (AUC ~0.50) - intraday modules removed
+- **Per-symbol ML models**: AUC ~0.50 pooled across 97 stocks - not a reliable edge
+- **Liquidity + short-term reversal composite**: the only validated edge (IC 0.046, t=4.38), modest: ~52% hit rate, mid-single-digit annualized excess vs NIFTY at quintile breadth
+
+If you need trading signals, prefer **risk management, position sizing, and edge filtering** over chasing a single high-accuracy model.
+
 ---
 
 ## 📂 File Explanations
@@ -82,7 +108,14 @@ python proof_test.py
 | File / Folder | Description |
 | :--- | :--- |
 | `market_advisor.py` | Main application script orchestrating data retrieval, Kronos K-line forecasting, LLM translation, and report output generation. |
-| `proof_test.py` | Supporting backtest verification tool computing precision and directional win-rate metrics on NSE symbols. |
+| `stock_analyzer.py` | High-speed concurrent technical screener generating multi-factor health scores and `stock_screener_dashboard.html`. |
+| `proof_test.py` | Scientific directional backtest verification tool evaluating foundation model hit ratios on Indian symbols. |
+| `pooled_model_v1.py` | Leakage-safe pooled cross-sectional model over NIFTY 100 (walk-forward, purged, baseline-aware). |
+| `composite_factor_strategy.py` | Validated liquidity + short-term reversal composite factor strategy. |
+| `backtest_random20.py` | Random-20 NIFTY-100 backtest of the composite strategy from a start date. |
+| `enhanced_predictor.py` | Multi-model ensemble (Kronos + LightGBM + ExtraTrees) walk-forward validator with market context features. |
+| `kronos_self_learning_agent.py` | Continuous daily self-learning agent with adaptive hyperparameter calibration. |
+| `backtest_engine.py` | Multi-asset portfolio backtester testing score monotonicity, IC, and Top-5 systematic rebalancing strategies. |
 | `templates/report_template.html` | Jinja2 responsive HTML visualizer template featuring dynamic UI styling and standalone export features. |
 | `outputs.md` | Automated generated advisory output detailing target levels and simplified Indian financial commentary. |
 | `kronos_lib/` | Core library folder cloned from official Kronos repository providing autoregressive Transformer and hierarchical tokenization architectures. |

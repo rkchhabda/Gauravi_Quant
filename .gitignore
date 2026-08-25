@@ -7,6 +7,10 @@ __pycache__/
 *$py.class
 .pytest_cache/
 
+# Outputs - keep weekly ranking snapshots (paper-trading track record)
+outputs/*
+!outputs/rankings/
+
 # Virtual environments
 venv/
 env/

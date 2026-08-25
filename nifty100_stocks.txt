@@ -1,0 +1,118 @@
+# NIFTY 100 STOCK LIST - Top 100 Indian Stocks by Market Cap
+# Format: SYMBOL.NS, Company Name
+# Updated: 2025
+
+
+# NIFTY 100 Constituents (Representative List)
+# Source: NSE India NIFTY 100 Index
+# Note: This list includes major NIFTY 100 stocks. For complete official list, check NSE website.
+
+# Top 10 by Market Cap
+RELIANCE.NS, Reliance Industries Ltd
+TCS.NS, Tata Consultancy Services Ltd
+HDFCBANK.NS, HDFC Bank Ltd
+INFY.NS, Infosys Ltd
+ICICIBANK.NS, ICICI Bank Ltd
+HINDUNILVR.NS, Hindustan Unilever Ltd
+ITC.NS, ITC Ltd
+SBIN.NS, State Bank of India
+BHARTIARTL.NS, Bharti Airtel Ltd
+KOTAKBANK.NS, Kotak Mahindra Bank Ltd
+
+# Next 20 (11-30)
+LT.NS, Larsen & Toubro Ltd
+AXISBANK.NS, Axis Bank Ltd
+ASIANPAINT.NS, Asian Paints Ltd
+MARUTI.NS, Maruti Suzuki India Ltd
+SUNPHARMA.NS, Sun Pharmaceutical Industries Ltd
+TATAMOTORS.NS, Tata Motors Ltd
+ADANIPORTS.NS, Adani Ports and Special Economic Zone Ltd
+TATASTEEL.NS, Tata Steel Ltd
+NTPC.NS, NTPC Ltd
+POWERGRID.NS, Power Grid Corporation of India Ltd
+M&M.NS, Mahindra & Mahindra Ltd
+HCLTECH.NS, HCL Technologies Ltd
+BAJFINANCE.NS, Bajaj Finance Ltd
+BAJAJFINSV.NS, Bajaj Finserv Ltd
+WIPRO.NS, Wipro Ltd
+ULTRACEMCO.NS, UltraTech Cement Ltd
+NESTLEIND.NS, Nestle India Ltd
+TITAN.NS, Titan Company Ltd
+TECHM.NS, Tech Mahindra Ltd
+GRASIM.NS, Grasim Industries Ltd
+
+# Next 30 (31-60)
+JSWSTEEL.NS, JSW Steel Ltd
+ADANIENT.NS, Adani Enterprises Ltd
+HINDALCO.NS, Hindalco Industries Ltd
+CIPLA.NS, Cipla Ltd
+DIVISLAB.NS, Divi's Laboratories Ltd
+COALINDIA.NS, Coal India Ltd
+INDUSINDBK.NS, IndusInd Bank Ltd
+HEROMOTOCO.NS, Hero MotoCorp Ltd
+BPCL.NS, Bharat Petroleum Corporation Ltd
+EICHERMOT.NS, Eicher Motors Ltd
+DRREDDY.NS, Dr. Reddy's Laboratories Ltd
+APOLLOHOSP.NS, Apollo Hospitals Enterprise Ltd
+TATACONSUM.NS, Tata Consumer Products Ltd
+GODREJCP.NS, Godrej Consumer Products Ltd
+PIDILITIND.NS, Pidilite Industries Ltd
+MUTHOOTFIN.NS, Muthoot Finance Ltd
+BERGEPAINT.NS, Berger Paints India Ltd
+SIEMENS.NS, Siemens Ltd
+TATAPOWER.NS, Tata Power Company Ltd
+IOC.NS, Indian Oil Corporation Ltd
+DLF.NS, DLF Ltd
+SBILIFE.NS, SBI Life Insurance Company Ltd
+HDFCLIFE.NS, HDFC Life Insurance Company Ltd
+ICICIGI.NS, ICICI Lombard General Insurance Company Ltd
+BRITANNIA.NS, Britannia Industries Ltd
+SHREECEM.NS, Shree Cement Ltd
+NMDC.NS, NMDC Ltd
+PAGEIND.NS, Page Industries Ltd
+HAVELLS.NS, Havells India Ltd
+AMBUJACEM.NS, Ambuja Cements Ltd
+
+# Next 30 (61-90)
+ADANIGREEN.NS, Adani Green Energy Ltd
+VEDL.NS, Vedanta Ltd
+LTI.NS, Larsen & Toubro Infotech Ltd
+GICRE.NS, General Insurance Corporation of India
+BOSCHLTD.NS, Bosch Ltd
+FEDERALBNK.NS, Federal Bank Ltd
+M&MFIN.NS, Mahindra & Mahindra Financial Services Ltd
+BANKBARODA.NS, Bank of Baroda
+PNB.NS, Punjab National Bank
+IDFCFIRSTB.NS, IDFC First Bank Ltd
+CANBK.NS, Canara Bank
+UNIONBANK.NS, Union Bank of India
+BEL.NS, Bharat Electronics Ltd
+IRCTC.NS, Indian Railway Catering and Tourism Corporation Ltd
+MPHASIS.NS, Mphasis Ltd
+LTTS.NS, L&T Technology Services Ltd
+PERSISTENT.NS, Persistent Systems Ltd
+COLPAL.NS, Colgate Palmolive India Ltd
+GODREJPROP.NS, Godrej Properties Ltd
+OBEROIRLTY.NS, Oberoi Realty Ltd
+PRESTIGE.NS, Prestige Estates Projects Ltd
+PHOENIXLTD.NS, Phoenix Mills Ltd
+TRENT.NS, Trent Ltd
+RAJESHEXPO.NS, Rajesh Exports Ltd
+TATAELXSI.NS, Tata Elxsi Ltd
+ZOMATO.NS, Zomato Ltd
+PAYTM.NS, Paytm
+NYKAA.NS, Nykaa
+POLICYBZR.NS, Policybazaar
+DEEPAKNTR.NS, Deepak Nitrite Ltd
+
+# Last 10 (91-100)
+SRF.NS, SRF Ltd
+ASTRAL.NS, Astral Ltd
+BALRAMCHIN.NS, Balrampur Chini Mills Ltd
+CUMMINSIND.NS, Cummins India Ltd
+ESCORTS.NS, Escorts Kubota Ltd
+EXIDEIND.NS, Exide Industries Ltd
+GHCL.NS, Gujarat Heavy Chemicals Ltd
+JBCHEPHARM.NS, JB Chemicals & Pharmaceuticals Ltd
+KPRMILL.NS, KPR Mill Ltd
+LICHSGFIN.NS, LIC Housing Finance Ltd

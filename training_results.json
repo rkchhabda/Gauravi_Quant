@@ -1,0 +1,47 @@
+[
+  {
+    "symbol": "HINDUNILVR.NS",
+    "name": "Hindustan Unilever",
+    "samples": 740,
+    "features": 52,
+    "accuracy": 67.9,
+    "auc": 0.4925,
+    "model_path": "models/ml_HINDUNILVR.NS.pkl"
+  },
+  {
+    "symbol": "ITC.NS",
+    "name": "ITC Limited",
+    "samples": 740,
+    "features": 52,
+    "accuracy": 71.4,
+    "auc": 0.5319,
+    "model_path": "models/ml_ITC.NS.pkl"
+  },
+  {
+    "symbol": "BHARTIARTL.NS",
+    "name": "Bharti Airtel",
+    "samples": 740,
+    "features": 52,
+    "accuracy": 46.1,
+    "auc": 0.4789,
+    "model_path": "models/ml_BHARTIARTL.NS.pkl"
+  },
+  {
+    "symbol": "SBIN.NS",
+    "name": "State Bank of India",
+    "samples": 740,
+    "features": 52,
+    "accuracy": 50.8,
+    "auc": 0.4926,
+    "model_path": "models/ml_SBIN.NS.pkl"
+  },
+  {
+    "symbol": "KOTAKBANK.NS",
+    "name": "Kotak Mahindra Bank",
+    "samples": 740,
+    "features": 52,
+    "accuracy": 65.6,
+    "auc": 0.5358,
+    "model_path": "models/ml_KOTAKBANK.NS.pkl"
+  }
+]

@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇮🇳 Gauravi Indian Market Advisor & Forecasts</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-purple: #8b5cf6;
+            --accent-blue: #3b82f6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            background: linear-gradient(135deg, var(--bg-dark), #1e1b4b);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .title-group h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .title-group p {
+            color: var(--text-muted);
+            margin: 0.5rem 0 0 0;
+        }
+        .btn-download {
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -10px var(--accent-purple);
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .symbol-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .badge-bullish { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #059669; }
+        .badge-bearish { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #dc2626; }
+        .badge-neutral { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #2563eb; }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+        .metric span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .metric strong {
+            font-size: 1.1rem;
+        }
+        .commentary {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            border-top: 1px dashed rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+            margin-top: 1rem;
+        }
+        .commentary i {
+            color: #a78bfa;
+        }
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="title-group">
+                <h1>🇮🇳 Gauravi Indian Market Advisor</h1>
+                <p>Beginner-Friendly Quant Insights Powered by Gauravi Base (~400MB) & Ollama Llama 3.2</p>
+            </div>
+            <a href="outputs.md" download class="btn-download">
+                📥 Download MD Report
+            </a>
+        </header>
+
+        <section class="grid">
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">BSE Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BSE.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹3,241.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.1%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹3,082.47</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹3,271.17</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, BSE Ltd is showing cooling momentum (-1.10%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 3082.47 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">NIFTY 50 Index</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">^NSEI</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹24,252.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.3%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹23,944.67</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹24,487.64</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    NIFTY 50 Index is currently in a steady consolidation phase (projected -0.30%). It is prudent for beginners to wait for a breakout above Rs. 24487.64 or accumulate near Rs. 23944.67.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Adani Enterprises Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ADANIENT.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,994.90</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.46%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹2,921.95</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹3,054.82</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Adani Enterprises Ltd is showing cooling momentum (-1.46%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 2921.95 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Adani Ports and Special Economic Zone Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ADANIPORTS.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,700.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.06%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,681.59</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,780.05</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Adani Ports and Special Economic Zone Ltd is currently in a steady consolidation phase (projected -0.06%). It is prudent for beginners to wait for a breakout above Rs. 1780.05 or accumulate near Rs. 1681.59.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Apollo Hospitals Enterprise Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">APOLLOHOSP.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹8,693.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.87%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹8,571.96</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹8,813.53</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Apollo Hospitals Enterprise Ltd is showing cooling momentum (-0.87%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 8571.96 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Asian Paints Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ASIANPAINT.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,640.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -2.32%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹2,545.58</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,675.39</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Asian Paints Ltd is showing cooling momentum (-2.32%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 2545.58 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Axis Bank Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">AXISBANK.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,245.80</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +2.28%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,225.51</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,282.16</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Axis Bank Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +2.28%. Beginners can watch Rs. 1225.51 as a safe buying bottom and Rs. 1282.16 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Bajaj Auto Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BAJAJ-AUTO.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹11,700.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -6.97%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹10,680.39</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹12,071.63</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Bajaj Auto Ltd is showing cooling momentum (-6.97%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 10680.39 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Bajaj Finserv Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BAJAJFINSV.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,032.50</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -8.18%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,851.14</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,096.42</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Bajaj Finserv Ltd is showing cooling momentum (-8.18%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 1851.14 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Bajaj Finance Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BAJFINANCE.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,095.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -10.17%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹975.77</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,121.07</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Bajaj Finance Ltd is showing cooling momentum (-10.17%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 975.77 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Bharat Electronics Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BEL.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹414.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +1.03%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹412.05</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹423.68</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Bharat Electronics Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +1.03%. Beginners can watch Rs. 412.05 as a safe buying bottom and Rs. 423.68 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Bharti Airtel Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">BHARTIARTL.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,946.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -3.32%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,868.93</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,016.57</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Bharti Airtel Ltd is showing cooling momentum (-3.32%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 1868.93 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Cipla Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">CIPLA.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,432.20</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.81%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,422.05</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,455.50</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Cipla Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +0.81%. Beginners can watch Rs. 1422.05 as a safe buying bottom and Rs. 1455.5 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Coal India Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">COALINDIA.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹405.20</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +4.7%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹399.42</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹427.39</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Coal India Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +4.7%. Beginners can watch Rs. 399.42 as a safe buying bottom and Rs. 427.39 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Dr. Reddy's Laboratories Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">DRREDDY.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,174.70</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +2.57%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,146.49</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,259.21</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Dr. Reddy's Laboratories Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +2.57%. Beginners can watch Rs. 1146.49 as a safe buying bottom and Rs. 1259.21 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Eicher Motors Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">EICHERMOT.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹8,042.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -7.26%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹7,385.48</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹8,186.12</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Eicher Motors Ltd is showing cooling momentum (-7.26%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 7385.48 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Divi's Laboratories Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">DIVISLAB.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹8,597.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -24.76%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹6,378.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹9,144.86</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Divi's Laboratories Ltd is showing cooling momentum (-24.76%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 6378.0 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Grasim Industries Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">GRASIM.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹3,308.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -3.16%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹3,170.99</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹3,435.29</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Grasim Industries Ltd is showing cooling momentum (-3.16%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 3170.99 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">HCL Technologies Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HCLTECH.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,302.50</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.02%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,275.99</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,332.21</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    HCL Technologies Ltd is currently in a steady consolidation phase (projected +0.02%). It is prudent for beginners to wait for a breakout above Rs. 1332.21 or accumulate near Rs. 1275.99.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">HDFC Bank Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HDFCBANK.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹726.95</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.86%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹722.55</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹747.52</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of HDFC Bank Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +0.86%. Beginners can watch Rs. 722.55 as a safe buying bottom and Rs. 747.52 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">HDFC Life Insurance Company Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HDFCLIFE.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹554.80</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +2.74%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹544.82</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹581.01</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of HDFC Life Insurance Company Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +2.74%. Beginners can watch Rs. 544.82 as a safe buying bottom and Rs. 581.01 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Hindalco Industries Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HINDALCO.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,029.85</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +2.71%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,021.66</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,069.40</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Hindalco Industries Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +2.71%. Beginners can watch Rs. 1021.66 as a safe buying bottom and Rs. 1069.4 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Hindustan Unilever Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HINDUNILVR.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,028.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.49%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹2,013.40</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,111.06</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Hindustan Unilever Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.49%. Beginners can watch Rs. 2013.4 as a safe buying bottom and Rs. 2111.06 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">ICICI Bank Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ICICIBANK.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,420.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -3.06%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,367.10</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,447.39</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, ICICI Bank Ltd is showing cooling momentum (-3.06%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 1367.1 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">InterGlobe Aviation Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">INDIGO.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹5,165.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.98%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹4,972.62</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹5,250.75</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, InterGlobe Aviation Ltd is showing cooling momentum (-1.98%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 4972.62 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Infosys Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">INFY.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,121.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.09%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,084.99</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,195.36</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Infosys Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.09%. Beginners can watch Rs. 1084.99 as a safe buying bottom and Rs. 1195.36 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">ITC Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ITC.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹269.40</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +6.87%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹264.67</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹290.42</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of ITC Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +6.87%. Beginners can watch Rs. 264.67 as a safe buying bottom and Rs. 290.42 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Jio Financial Services Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">JIOFIN.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹244.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.15%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹233.80</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹250.52</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Jio Financial Services Ltd is showing cooling momentum (-1.15%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 233.8 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">JSW Steel Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">JSWSTEEL.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,293.70</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.94%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,277.82</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,316.20</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of JSW Steel Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +0.94%. Beginners can watch Rs. 1277.82 as a safe buying bottom and Rs. 1316.2 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Kotak Mahindra Bank Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">KOTAKBANK.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹402.80</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.09%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹389.72</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹408.53</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Kotak Mahindra Bank Ltd is showing cooling momentum (-1.09%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 389.72 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Larsen & Toubro Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">LT.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹4,093.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.79%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹3,985.14</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹4,117.30</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Larsen & Toubro Ltd is showing cooling momentum (-1.79%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 3985.14 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Mahindra & Mahindra Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">M&M.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹3,412.20</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -6.53%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹3,170.34</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹3,451.70</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Mahindra & Mahindra Ltd is showing cooling momentum (-6.53%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 3170.34 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Maruti Suzuki India Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">MARUTI.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹13,565.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.02%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹13,293.16</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹13,672.75</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Maruti Suzuki India Ltd is currently in a steady consolidation phase (projected -0.02%). It is prudent for beginners to wait for a breakout above Rs. 13672.75 or accumulate near Rs. 13293.16.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Max Healthcare Institute Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">MAXHEALTH.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,000.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +4.28%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹894.66</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,053.40</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Max Healthcare Institute Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +4.28%. Beginners can watch Rs. 894.66 as a safe buying bottom and Rs. 1053.4 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Nestle India Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">NESTLEIND.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,477.10</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.12%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,462.63</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,499.37</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Nestle India Ltd is currently in a steady consolidation phase (projected -0.12%). It is prudent for beginners to wait for a breakout above Rs. 1499.37 or accumulate near Rs. 1462.63.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">NTPC Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">NTPC.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹340.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -1.48%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹333.50</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹345.00</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, NTPC Ltd is showing cooling momentum (-1.48%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 333.5 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Oil & Natural Gas Corporation Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ONGC.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹236.40</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.59%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹229.84</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹238.28</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Oil & Natural Gas Corporation Ltd is showing cooling momentum (-0.59%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 229.84 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Power Grid Corporation of India Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">POWERGRID.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹272.40</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.25%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹265.35</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹282.41</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Power Grid Corporation of India Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.25%. Beginners can watch Rs. 265.35 as a safe buying bottom and Rs. 282.41 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Reliance Industries Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">RELIANCE.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,316.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.57%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,298.88</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,376.61</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Reliance Industries Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.57%. Beginners can watch Rs. 1298.88 as a safe buying bottom and Rs. 1376.61 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">SBI Life Insurance Company Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">SBILIFE.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,792.90</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +1.16%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,764.13</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,819.62</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of SBI Life Insurance Company Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +1.16%. Beginners can watch Rs. 1764.13 as a safe buying bottom and Rs. 1819.62 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">State Bank of India</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">SBIN.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,048.70</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +1.62%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,040.61</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,091.24</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of State Bank of India like buying high-demand festival gold—our Gauravi AI expects positive momentum of +1.62%. Beginners can watch Rs. 1040.61 as a safe buying bottom and Rs. 1091.24 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Shriram Finance Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">SHRIRAMFIN.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,130.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -8.12%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,030.74</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,158.60</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Shriram Finance Ltd is showing cooling momentum (-8.12%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 1030.74 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Sun Pharmaceutical Industries Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">SUNPHARMA.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,904.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.47%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,882.29</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,933.96</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Sun Pharmaceutical Industries Ltd is currently in a steady consolidation phase (projected -0.47%). It is prudent for beginners to wait for a breakout above Rs. 1933.96 or accumulate near Rs. 1882.29.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Tata Consumer Products Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TATACONSUM.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,049.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.93%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,020.17</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,086.06</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Tata Consumer Products Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +0.93%. Beginners can watch Rs. 1020.17 as a safe buying bottom and Rs. 1086.06 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Tata Steel Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TATASTEEL.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹183.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.55%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹178.44</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹190.34</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Tata Steel Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.55%. Beginners can watch Rs. 178.44 as a safe buying bottom and Rs. 190.34 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Tata Consultancy Services Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TCS.NS</span>
+                    </div>
+                    <span class="badge badge-bullish">
+                        Bullish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,302.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +3.0%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹2,196.42</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,402.03</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Think of Tata Consultancy Services Ltd like buying high-demand festival gold—our Gauravi AI expects positive momentum of +3.0%. Beginners can watch Rs. 2196.42 as a safe buying bottom and Rs. 2402.03 as a target for booking profit.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Tech Mahindra Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TECHM.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹1,584.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -4.23%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹1,508.34</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹1,629.41</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Tech Mahindra Ltd is showing cooling momentum (-4.23%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 1508.34 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Titan Company Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TITAN.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹5,086.10</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -4.5%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹4,729.78</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹5,207.65</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Titan Company Ltd is showing cooling momentum (-4.50%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 4729.78 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Hero MotoCorp Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">HEROMOTOCO.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹5,740.50</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -9.25%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹5,175.02</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹5,851.64</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Hero MotoCorp Ltd is showing cooling momentum (-9.25%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 5175.02 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Trent Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">TRENT.NS</span>
+                    </div>
+                    <span class="badge badge-bearish">
+                        Bearish
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹2,924.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #f87171;">
+                            -0.66%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹2,882.45</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹2,980.25</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Right now, Trent Ltd is showing cooling momentum (-0.66%), similar to seasonal discounts in wholesale markets. It is advisable for new investors to stay patient, using Rs. 2882.45 as a protective safety net before entering.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">UltraTech Cement Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">ULTRACEMCO.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹11,570.00</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.39%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹11,514.41</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹11,971.73</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    UltraTech Cement Ltd is currently in a steady consolidation phase (projected +0.39%). It is prudent for beginners to wait for a breakout above Rs. 11971.73 or accumulate near Rs. 11514.41.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <div class="symbol-name">Wipro Ltd</div>
+                        <span style="font-size: 0.8rem; color: var(--text-muted);">WIPRO.NS</span>
+                    </div>
+                    <span class="badge badge-neutral">
+                        Neutral
+                    </span>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric">
+                        <span>Current Price</span>
+                        <strong>₹180.79</strong>
+                    </div>
+                    <div class="metric">
+                        <span>14-Day Proj. Return</span>
+                        <strong style="color: #34d399;">
+                            +0.19%
+                        </strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Support</span>
+                        <strong>₹172.40</strong>
+                    </div>
+                    <div class="metric">
+                        <span>Target Resistance</span>
+                        <strong>₹182.32</strong>
+                    </div>
+                </div>
+
+                <div class="commentary">
+                    <i>💡 Advice for Indian Beginners:</i><br>
+                    Wipro Ltd is currently in a steady consolidation phase (projected +0.19%). It is prudent for beginners to wait for a breakout above Rs. 182.32 or accumulate near Rs. 172.4.
+                </div>
+            </div>
+            
+        </section>
+
+        <footer>
+            Generated automatically by Antigravity IDE • Model: NeoQuasar/Gauravi-base (~400MB) + Ollama llama3.2:3b • Built for Indian Financial Education
+        </footer>
+    </div>
+</body>
+</html>

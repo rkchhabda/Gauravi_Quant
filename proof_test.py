@@ -3,6 +3,7 @@ import torch
 import numpy as np
 import pandas as pd
 import yfinance as yf
+import os
 
 try:
     sys.stdout.reconfigure(encoding='utf-8')
@@ -12,6 +13,10 @@ except Exception:
 # Fixed foundational model definition
 KRONOS_MODEL_NAME = "NeoQuasar/Kronos-base"
 TOKENIZER_NAME = "NeoQuasar/Kronos-Tokenizer-base"
+
+def get_hf_token():
+    """Get Hugging Face token from environment at runtime."""
+    return os.environ.get("HF_TOKEN") or os.environ.get("HUGGINGFACE_HUB_TOKEN")
 
 sys.path.append("./kronos_lib")
 # pyrefly: ignore [missing-import]
@@ -31,30 +36,23 @@ def fetch_test_data(symbol):
         df = ticker.history(period="6mo", interval="1d")
         if not df.empty and len(df) >= 80:
             df = df.reset_index()
-            df["timestamps"] = pd.to_datetime(df["Date"]).dt.tz_localize(None)
+            date_col = "Date" if "Date" in df.columns else "Datetime"
+            df["timestamps"] = pd.to_datetime(df[date_col]).dt.tz_localize(None)
             df = df.rename(columns={"Open": "open", "High": "high", "Low": "low", "Close": "close"})
             return df[["timestamps", "open", "high", "low", "close"]].dropna()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[WARN] Failed to fetch data for {symbol}: {e}")
     
-    # Reliable backup test sequence
-    base = 24000.0 if symbol == "^NSEI" else 1500.0
-    dates = pd.date_range(end=pd.Timestamp.now(), periods=100, freq='D')
-    prices = base + np.cumsum(np.random.normal(0, base * 0.01, size=100))
-    return pd.DataFrame({
-        'timestamps': dates,
-        'open': prices * 0.998,
-        'high': prices * 1.006,
-        'low': prices * 0.994,
-        'close': prices
-    })
+    print(f"[WARN] Insufficient or unavailable real market data for {symbol}. Skipping in test.")
+    return pd.DataFrame()
 
 def run_proof_test():
     print("[TEST] Running Scientific Proof & Directional Accuracy Backtest for Kronos-base (~400MB)...")
     device = "cuda:0" if torch.cuda.is_available() else "cpu"
     
-    tokenizer = KronosTokenizer.from_pretrained(TOKENIZER_NAME)
-    model = Kronos.from_pretrained(KRONOS_MODEL_NAME)
+    tokenizer_kwargs = {"token": get_hf_token()} if get_hf_token() else {}
+    tokenizer = KronosTokenizer.from_pretrained(TOKENIZER_NAME, **tokenizer_kwargs)
+    model = Kronos.from_pretrained(KRONOS_MODEL_NAME, **tokenizer_kwargs)
     predictor = KronosPredictor(model, tokenizer, device=device, max_context=512)
 
     lookback = 60

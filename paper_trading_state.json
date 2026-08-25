@@ -1,0 +1,79 @@
+{
+  "capital": 854997.3986816406,
+  "positions": [
+    {
+      "symbol": "RELIANCE.NS",
+      "name": "Reliance Industries",
+      "direction": "DOWN",
+      "entry_price": 1318.800048828125,
+      "entry_date": "2026-08-24 09:18",
+      "confidence": 56.7,
+      "shares": 10,
+      "stop_loss": 1358.36,
+      "target": 1239.67,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "HDFCBANK.NS",
+      "name": "HDFC Bank",
+      "direction": "DOWN",
+      "entry_price": 733.25,
+      "entry_date": "2026-08-24 09:22",
+      "confidence": 67.4,
+      "shares": 46,
+      "stop_loss": 755.25,
+      "target": 689.25,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "INFY.NS",
+      "name": "Infosys",
+      "direction": "UP",
+      "entry_price": 1142.5,
+      "entry_date": "2026-08-24 09:23",
+      "confidence": 53.7,
+      "shares": 8,
+      "stop_loss": 1108.22,
+      "target": 1211.05,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "ICICIBANK.NS",
+      "name": "ICICI Bank",
+      "direction": "UP",
+      "entry_price": 1423.699951171875,
+      "entry_date": "2026-08-24 09:24",
+      "confidence": 67.4,
+      "shares": 23,
+      "stop_loss": 1380.99,
+      "target": 1509.12,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "SBIN.NS",
+      "name": "State Bank of India",
+      "direction": "UP",
+      "entry_price": 1045.800048828125,
+      "entry_date": "2026-08-24 09:27",
+      "confidence": 64.2,
+      "shares": 24,
+      "stop_loss": 1014.43,
+      "target": 1108.55,
+      "status": "OPEN"
+    },
+    {
+      "symbol": "BHARTIARTL.NS",
+      "name": "Bharti Airtel",
+      "direction": "DOWN",
+      "entry_price": 1943.800048828125,
+      "entry_date": "2026-08-24 09:28",
+      "confidence": 68.6,
+      "shares": 16,
+      "stop_loss": 2002.11,
+      "target": 1827.17,
+      "status": "OPEN"
+    }
+  ],
+  "closed_positions": [],
+  "trade_history": []
+}
