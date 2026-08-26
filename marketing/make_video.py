@@ -19,6 +19,10 @@ VOICE = "en-IN-NeerjaNeural"
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "marketing"
 TMP = Path(tempfile.mkdtemp(prefix="gauravi_video_"))
+LOGO = OUT_DIR / "gauravi_logo_3d.png"  # 400x140
+LOGO_W, LOGO_H = 400, 140
+LOGO_X = W - LOGO_W - 24  # 24px margin from right
+LOGO_Y = 24  # 24px margin from top
 
 FONT_BOLD = r"C:\Windows\Fonts\segoeuib.ttf"
 FONT_REG = r"C:\Windows\Fonts\segoeui.ttf"
@@ -260,13 +264,15 @@ def main():
             f":d={frames}:s=1920x1080:fps={FPS},"
             f"fade=t=in:st=0:d=0.5,fade=t=out:st={fade_out}:d=0.6,format=yuv420p"
         )
+        # Logo overlay filter
+        logo_overlay = f"[v][logo]overlay={LOGO_X}:{LOGO_Y}[vout]"
         clip = TMP / f"scene_{i}.mp4"
         print(f"[{i}/6] animating ({dur:.1f}s) ...")
         subprocess.run([
             "ffmpeg", "-y", "-loglevel", "error",
-            "-i", str(png), "-i", str(mp3),
-            "-filter_complex", f"[0:v]{vf}[v];[1:a]apad=whole_dur={dur}[a]",
-            "-map", "[v]", "-map", "[a]",
+            "-i", str(png), "-i", str(mp3), "-i", str(LOGO),
+            "-filter_complex", f"[0:v]{vf}[v];[1:a]apad=whole_dur={dur}[a];{logo_overlay}",
+            "-map", "[vout]", "-map", "[a]",
             "-t", str(dur),
             "-c:v", "libx264", "-preset", "medium", "-tune", "stillimage",
             "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
