@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Guvravi Quant — Video Deck</title>
+<style>
+:root{--bg:#0d1117;--accent:#58a6ff;--good:#3fb950;--bad:#f85149}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;font-family:'Segoe UI',system-ui,sans-serif;color:#fff;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:6vw;background:var(--bg)}
+.slide.active{display:flex;animation:fade .7s ease}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1}}
+.kicker{color:var(--accent);font-size:1.4vw;letter-spacing:.35em;text-transform:uppercase;margin-bottom:2.5vh}
+h1{font-size:5.2vw;line-height:1.15;font-weight:800}
+h1 .red{color:var(--bad)}h1 .green{color:var(--good)}
+p.sub{font-size:1.8vw;color:#8b949e;margin-top:3vh;max-width:70vw}
+.big{font-size:9vw;font-weight:900}
+.logo{font-size:6vw;font-weight:900;background:linear-gradient(90deg,#58a6ff,#3fb950);-webkit-background-clip:text;background-clip:text;color:transparent}
+.cols{display:flex;gap:4vw;margin-top:5vh}
+.card{background:#161b22;border:1px solid #30363d;border-radius:16px;padding:3vw 3.5vw;width:30vw;text-align:left}
+.card h3{font-size:1.9vw;margin-bottom:1.5vh}.card h3.g{color:var(--good)}.card h3.b{color:var(--bad)}
+.card p{font-size:1.25vw;color:#c9d1d9;line-height:1.55}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;margin-top:5vh;width:80vw}
+.stat{background:#161b22;border:1px solid #30363d;border-radius:14px;padding:2.5vw}
+.stat b{display:block;font-size:3.2vw;color:var(--accent)}
+.stat span{font-size:1.15vw;color:#8b949e}
+.warn{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.4);border-radius:14px;padding:2vw 3vw;margin-top:4vh}
+.warn p{font-size:1.7vw}
+.browser{width:62vw;background:#161b22;border:1px solid #30363d;border-radius:12px;margin-top:4vh;text-align:left;overflow:hidden}
+.bar{background:#21262d;padding:.8vw 1.2vw;font-size:1vw;color:#8b949e;display:flex;gap:.5vw}
+.dot{width:.8vw;height:.8vw;border-radius:50%}
+.content{padding:1.6vw 2vw;font-size:1.05vw}
+table{width:100%;border-collapse:collapse}
+td,th{padding:.45vw .8vw;border-bottom:1px solid #30363d;font-size:1vw}
+th{text-align:left;color:#8b949e}
+.up{color:var(--good)}.dn{color:var(--bad)}
+.cta a{display:inline-block;margin-top:2vh;padding:1.4vh 3vw;font-size:1.6vw;background:var(--good);color:#04160a;border-radius:40px;text-decoration:none;font-weight:700}
+.hint{position:fixed;bottom:12px;right:16px;color:#484f58;font-size:13px;z-index:9}
+</style>
+</head>
+<body>
+
+<section class="slide active" data-dur="18">
+  <div class="kicker">The problem</div>
+  <h1><span class="red">“90% ACCURACY”</span><br>stock tips are lying to you.</h1>
+  <p class="sub">If someone really had that edge… they wouldn't sell it for ₹999/month.</p>
+</section>
+
+<section class="slide" data-dur="22">
+  <div class="logo">Guvravi Quant</div>
+  <p class="sub" style="font-size:2.2vw">AI-powered weekly ranking of India's NIFTY 100</p>
+  <div class="cols">
+    <div class="card"><h3 class="g">▲ Top 20</h3><p>Strongest momentum + healthy recent dip — long candidates, published every Monday 9 AM IST.</p></div>
+    <div class="card"><h3 class="b">▼ Bottom 20</h3><p>Weakest scores — stocks to avoid or exit. Every week, every stock, one transparent score.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-dur="40">
+  <div class="kicker">How it works</div>
+  <h1 style="font-size:4vw">Two proven factors.<br>Zero opinions.</h1>
+  <div class="cols">
+    <div class="card"><h3 class="g">1 · Momentum (12-1M)</h3><p>Stocks that beat the market over the past year tend to keep winning. The most documented effect in Indian equities — positive in 67% of our test periods.</p></div>
+    <div class="card"><h3 class="g">2 · Reversal (20-day)</h3><p>Quality stocks that recently dipped tend to bounce back over the following weeks. Our best post-cost portfolio signal.</p></div>
+  </div>
+  <p class="sub">No rumors · No tips · No gut feeling — just data, ranked weekly.</p>
+</section>
+
+<section class="slide" data-dur="45">
+  <div class="kicker">Tested — not promised</div>
+  <div class="grid">
+    <div class="stat"><b>95,000+</b><span>out-of-sample predictions</span></div>
+    <div class="stat"><b>97</b><span>NIFTY-100 stocks pooled</span></div>
+    <div class="stat"><b>3 years</b><span>walk-forward validation</span></div>
+    <div class="stat"><b>52%</b><span>directional accuracy — the honest number</span></div>
+    <div class="stat"><b>AUC 0.51</b><span>verified edge band</span></div>
+    <div class="stat"><b>100%</b><span>test code published openly</span></div>
+  </div>
+  <div class="warn"><p>Most channels hide this number. We lead with it — small verified edges, applied with diversification, is how real quant funds work.</p></div>
+</section>
+
+<section class="slide" data-dur="35">
+  <div class="kicker">Proof in public</div>
+  <h1 style="font-size:3.6vw">Every week's report stays online. Forever.</h1>
+  <div class="browser">
+    <div class="bar"><span class="dot" style="background:#f85149"></span><span class="dot" style="background:#d29922"></span><span class="dot" style="background:#3fb950"></span>&nbsp; rkchhabda.github.io/Guvravi_Quant</div>
+    <div class="content">
+      <table>
+        <tr><th>#</th><th>Stock</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th></tr>
+        <tr><td>1</td><td class="up">CUMMINSIND</td><td>+37.7%</td><td class="dn">−7.8%</td><td>0.96</td></tr>
+        <tr><td>2</td><td class="up">PHOENIXLTD</td><td>+29.5%</td><td class="dn">−5.4%</td><td>0.92</td></tr>
+        <tr><td>3</td><td class="up">ADANIPORTS</td><td>+24.2%</td><td class="dn">−5.1%</td><td>0.90</td></tr>
+      </table>
+      <p style="color:#8b949e;font-size:.95vw;margin-top:1vw">Timestamped archive → scroll back and verify any past pick yourself.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide cta" data-dur="20">
+  <div class="kicker">Public beta — free while we build the record</div>
+  <h1 style="font-size:4vw">Watch the edge prove itself.<br>Week by week. Number by number.</h1>
+  <a href="#">rkchhabda.github.io/Guvravi_Quant</a>
+  <p class="sub" style="margin-top:4vh">Subscribe · New rankings every Monday 9 AM IST<br><span style="font-size:1vw">Research & educational purposes only. Not investment advice. Market investments are subject to risks.</span></p>
+</section>
+
+<div class="hint">Press S to start/pause auto-play · ←/→ to navigate</div>
+
+<script>
+const slides=[...document.querySelectorAll(".slide")];let i=0,timer=null;
+function show(n){slides[i].classList.remove("active");i=(n+slides.length)%slides.length;slides[i].classList.add("active")}
+function play(){stop();timer=setTimeout(next,+slides[i].dataset.dur*1000)}
+function next(){show(i+1);play()}function stop(){if(timer)clearTimeout(timer)}
+document.addEventListener("keydown",e=>{
+ if(e.key==="s"||e.key==="S"){timer?stop():play()}
+ if(e.key==="ArrowRight"){stop();show(i+1)}
+ if(e.key==="ArrowLeft"){stop();show(i-1)}
+});
+document.body.addEventListener("click",()=>{timer?stop():play()});
+</script>
+</body>
+</html>

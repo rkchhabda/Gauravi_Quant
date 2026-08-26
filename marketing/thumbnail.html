@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Thumbnail — 1280x720</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#222;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Arial Black','Segoe UI',sans-serif}
+.thumb{width:1280px;height:720px;background:linear-gradient(135deg,#0d1117 0%,#161b22 100%);position:relative;overflow:hidden;border:1px solid #333}
+.glow{position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(120px);opacity:.25}
+.g1{background:#f85149;top:-200px;left:-150px}
+.g2{background:#3fb950;bottom:-250px;right:-150px}
+.left{position:absolute;left:60px;top:110px;width:560px}
+.q{font-size:88px;color:#f85149;line-height:.95;transform:rotate(-4deg)}
+.q small{display:block;font-size:40px;color:#fff;margin-top:8px}
+.cross{font-size:70px;position:absolute;right:-10px;top:-30px}
+.right{position:absolute;right:55px;top:150px;width:600px;text-align:right}
+.a{font-size:110px;color:#3fb950;line-height:.95;transform:rotate(2deg);text-shadow:0 0 40px rgba(63,185,80,.5)}
+.a small{display:block;font-size:44px;color:#ffd700;margin-top:6px}
+.check{font-size:64px}
+.strip{position:absolute;bottom:0;left:0;right:0;height:150px;background:rgba(22,27,34,.94);border-top:3px solid #58a6ff;display:flex;align-items:center;padding:0 40px;gap:18px}
+.tag{font-size:26px;color:#58a6ff;font-family:Consolas,monospace;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 18px;white-space:nowrap}
+.tag b{color:#3fb950}
+.vs{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) rotate(-8deg);font-size:64px;color:#ffd700;text-shadow:0 4px 20px rgba(0,0,0,.8)}
+.corner{position:absolute;top:24px;left:60px;font-size:30px;color:#8b949e;font-family:'Segoe UI',sans-serif;font-weight:600}
+.corner b{color:#fff}
+</style>
+</head>
+<body>
+<div class="thumb" id="thumb">
+  <div class="glow g1"></div><div class="glow g2"></div>
+  <div class="corner">Guvravi <b>Quant</b></div>
+  <div class="left">
+    <div class="q"><span class="cross">❌</span>“90%<br>ACCURACY?”<small>stock tip sellers</small></div>
+  </div>
+  <div class="vs">VS</div>
+  <div class="right">
+    <div class="a"><span class="check">✅</span>52%<br>+ PROOF<small>verified weekly</small></div>
+  </div>
+  <div class="strip">
+    <span class="tag">CUMMINSIND <b>+37.7%</b></span>
+    <span class="tag">ADANIPORTS <b>+24.2%</b></span>
+    <span class="tag">FEDERALBNK <b>+74.9%</b></span>
+    <span class="tag" style="color:#f85149;border-color:#f85149">95,000 predictions tested</span>
+  </div>
+</div>
+</body>
+</html>

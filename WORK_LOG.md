@@ -6,6 +6,30 @@
 
 ---
 
+## 🚀 PRODUCT HARDENING (2026-08-25, session 2)
+
+1. **Earnings-date avoidance added** to weekly rankings ✅
+   - `fetch_earnings_within()` — parallel yfinance calendar check, flags stocks reporting within ~12 days
+   - "Earnings ⚠️" column in md + html reports; first run flagged 17/96 stocks
+2. **FII/DII data: 3-tier source chain** ✅
+   - NSE API (anti-bot blocked) → moneycontrol scrape (404) → **local CSV `data/fii_dii.csv`** (works)
+   - Free scrapers are all WAF-blocked; weekly manual CSV entry (~30s from NSDL site) is the reliable path
+   - Template created at `data/fii_dii.csv` (add rows: `date,fii_net_cr,dii_net_cr`)
+3. **YouTube launch package created** (`marketing/`) ✅
+   - `video_slides.html` — 6-scene auto-playing deck (S to play, ←/→ navigate)
+   - `video_script.md` — 3-min VO script + 60s Shorts cut
+   - `youtube_upload_pack.md` — titles, description, tags, thumbnail concepts, pinned comment
+   - `thumbnail.html` — 1280×720 screenshot-ready thumbnail
+4. Brand renamed to **Guvravi Quant** (repo/folder rename pending user: GitHub Settings + local folder + `git remote set-url`)
+
+### Next Steps
+1. User: complete repo rename + push latest changes (`git add -A; git commit -m "earnings flag + fii/dii csv + marketing"; git push`)
+2. Record & upload the YouTube video using `marketing/` package
+3. Weekly rhythm: Monday run report → update `data/fii_dii.csv` → verify last week's picks
+4. After ~10 weeks: compute live IC/hit-rate from snapshots → launch paid tier if IC > 0.03
+
+---
+
 ## ☁️ CLOUD DEPLOYMENT SETUP (2026-08-25)
 
 **Option 1 implemented: GitHub Actions + GitHub Pages**

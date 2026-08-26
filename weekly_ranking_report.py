@@ -20,7 +20,17 @@ from pooled_model_v1 import load_symbols, fetch_panel, build_dataset
 
 
 def fetch_fii_dii_flow():
-    """Best-effort FII/DII net flow from NSE public API. Returns dict or None."""
+    """FII/DII net flow. Sources: NSE API -> moneycontrol -> local CSV (data/fii_dii.csv)."""
+    out = _fii_dii_nse()
+    if out:
+        return out
+    out = _fii_dii_moneycontrol()
+    if out:
+        return out
+    return _fii_dii_csv()
+
+
+def _fii_dii_nse():
     try:
         import requests
         h = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -31,21 +41,112 @@ def fetch_fii_dii_flow():
         r = s.get("https://www.nseindia.com/api/fii-dii-money-flow",
                   headers=h, timeout=10)
         data = r.json()
-        latest = data["category"][-1] if isinstance(data, dict) else None
         out = {}
         for row in (data.get("category") or []):
             date = row.get("date")
             for e in row.get("value", []):
                 cat = e.get("category")
                 val = e.get("netCr") if e.get("netCr") not in (None, "-") else 0
-                key = f"fii_net_cr" if "FII" in str(cat) or "FPI" in str(cat) else "dii_net_cr"
+                key = "fii_net_cr" if "FII" in str(cat) or "FPI" in str(cat) else "dii_net_cr"
                 out.setdefault(date, {})[key] = float(val)
         if out:
             last_date = sorted(out)[-1]
-            return {"date": last_date, **out[last_date]}
-    except Exception as e:
-        print(f"[FII/DII] unavailable ({type(e).__name__}) - proceeding without it")
+            return {"source": "nse", "date": last_date, **out[last_date]}
+    except Exception:
+        pass
     return None
+
+
+def _fii_dii_moneycontrol():
+    try:
+        import requests
+        h = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        tables = pd.read_html("https://www.moneycontrol.com/stocks/marketstats/fii_dii_activity/index.html",
+                              storage_options=h) if hasattr(pd, "read_html") else []
+        for t in tables:
+            cols = [str(c).lower() for c in t.columns]
+            flat = " ".join(cols)
+            if "fii" in flat and ("net" in flat or "buy" in flat):
+                date_col = t.columns[0]
+                last = t.iloc[0]
+                date = str(last[date_col])
+                fii_col = next(c for c in t.columns if "fii" in str(c).lower() and "net" in str(c).lower())
+                dii_col = next((c for c in t.columns if "dii" in str(c).lower() and "net" in str(c).lower()), None)
+
+                def num(v):
+                    s = str(v).replace(",", "").replace("₹", "").strip()
+                    neg = s.startswith("(") and s.endswith(")")
+                    s = s.strip("()")
+                    try:
+                        f = float(s)
+                    except ValueError:
+                        return 0.0
+                    return -f if neg else f
+                return {"source": "moneycontrol", "date": date,
+                        "fii_net_cr": num(last[fii_col]),
+                        "dii_net_cr": num(last[dii_col]) if dii_col else 0.0}
+    except Exception:
+        pass
+    return None
+
+
+def _fii_dii_csv():
+    """Read manual weekly entry: data/fii_dii.csv with columns date,fii_net_cr,dii_net_cr."""
+    try:
+        path = os.path.join("data", "fii_dii.csv")
+        if not os.path.exists(path):
+            return None
+        df = pd.read_csv(path)
+        df.columns = [c.strip().lower() for c in df.columns]
+        need = {"date", "fii_net_cr", "dii_net_cr"}
+        if not need.issubset(df.columns):
+            print(f"[FII/DII] {path} must have columns: date,fii_net_cr,dii_net_cr")
+            return None
+        df = df.dropna(subset=["fii_net_cr", "dii_net_cr"])
+        if df.empty:
+            return None
+        last = df.sort_values("date").iloc[-1]
+        return {"source": "csv", "date": str(last["date"]),
+                "fii_net_cr": float(last["fii_net_cr"]),
+                "dii_net_cr": float(last["dii_net_cr"])}
+    except Exception as e:
+        print(f"[FII/DII] CSV read failed: {e}")
+        return None
+
+
+def fetch_earnings_within(symbols, days=12):
+    """Return {symbol: True} if earnings report within next `days` days. Best-effort."""
+    import concurrent.futures as cf
+    import yfinance as yf
+    from datetime import timedelta
+    result = {}
+
+    def check(sym):
+        try:
+            cal = yf.Ticker(sym).calendar
+            dates = None
+            if isinstance(cal, dict):
+                dates = cal.get("Earnings Date")
+            elif cal is not None and hasattr(cal, "loc"):
+                idx = [str(x) for x in cal.index]
+                if "Earnings Date" in idx:
+                    dates = cal.loc["Earnings Date"].iloc[0]
+            if dates is None:
+                return sym, False
+            if not isinstance(dates, (list, tuple, pd.DatetimeIndex)):
+                dates = [dates]
+            cutoff = pd.Timestamp.now().normalize() + pd.Timedelta(days=days)
+            for d in dates:
+                if pd.to_datetime(d) <= cutoff:
+                    return sym, True
+            return sym, False
+        except Exception:
+            return sym, False
+
+    with cf.ThreadPoolExecutor(max_workers=12) as ex:
+        for sym, risky in ex.map(check, symbols):
+            result[sym] = risky
+    return result
 
 
 def generate(top_n=20):
@@ -66,6 +167,12 @@ def generate(top_n=20):
     snap = snap.sort_values("score_raw", ascending=False).reset_index(drop=True)
     snap["rank"] = np.arange(1, len(snap) + 1)
 
+    print("Checking upcoming earnings dates (best-effort)...")
+    earnings_map = fetch_earnings_within(snap["symbol"].tolist())
+    snap["earnings_soon"] = snap["symbol"].map(earnings_map).fillna(False)
+    n_risky = int(snap["earnings_soon"].sum())
+    print(f"  {n_risky} stock(s) report earnings within 12 days")
+
     fii = fetch_fii_dii_flow()
 
     def row(r):
@@ -79,6 +186,7 @@ def generate(top_n=20):
             "mom_12_1_pct": round(mom_raw * 100, 1) if not np.isnan(mom_raw) else None,
             "ret20_pct": round(ret20_raw * 100, 1),
             "score": round(float(r["score_raw"]), 3),
+            "earnings_soon": bool(r["earnings_soon"]),
         }
 
     top = [row(snap.iloc[i]) for i in range(min(top_n, len(snap)))]
@@ -115,18 +223,23 @@ def generate(top_n=20):
                   f"FII {fii_sign}{fii_v} Cr · DII {dii_sign}{dii_v} Cr")
         md.append("")
     md += ["## Top 20 (Long candidates)", "",
-           "| Rank | Stock | Price | 12-1M Mom% | 20d Ret% | Score |",
-           "|---|---|---|---|---|---|"]
+           "| Rank | Stock | Price | 12-1M Mom% | 20d Ret% | Score | Earnings |",
+           "|---|---|---|---|---|---|---|"]
     for r in top:
+        flag = "⚠️ this week" if r["earnings_soon"] else "clear"
         md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {r['mom_12_1_pct']}% "
-                  f"| {r['ret20_pct']}% | {r['score']} |")
+                  f"| {r['ret20_pct']}% | {r['score']} | {flag} |")
     md += ["", "## Bottom 20 (Avoid / Short candidates)", "",
-           "| Rank | Stock | Price | 12-1M Mom% | 20d Ret% | Score |",
-           "|---|---|---|---|---|---|"]
+           "| Rank | Stock | Price | 12-1M Mom% | 20d Ret% | Score | Earnings |",
+           "|---|---|---|---|---|---|---|"]
     for r in bottom:
+        flag = "⚠️ this week" if r["earnings_soon"] else "clear"
         md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {r['mom_12_1_pct']}% "
-                  f"| {r['ret20_pct']}% | {r['score']} |")
+                  f"| {r['ret20_pct']}% | {r['score']} | {flag} |")
     md += ["",
+           "⚠️ *Earnings flag = company reports results within ~12 days; expect high volatility "
+           "around results regardless of ranking.*",
+           "",
            "---",
            "*Research purposes only. Historical validation shows ~50-51% directional edge "
            "(AUC ~0.51). Expect roughly half of picks to underperform. Not investment advice.*"]
@@ -156,7 +269,8 @@ def write_html(snap, md_path):
     rows = lambda lst, cls: "".join(
         f'<tr class="{cls}"><td>{r["rank"]}</td><td><b>{r["symbol"]}</b></td>'
         f'<td>{r["close"]}</td><td>{r["mom_12_1_pct"]}%</td>'
-        f'<td>{r["ret20_pct"]}%</td><td>{r["score"]}</td></tr>' for r in lst)
+        f'<td>{r["ret20_pct"]}%</td><td>{r["score"]}</td>'
+        f'<td>{"⚠️ this week" if r["earnings_soon"] else "clear"}</td></tr>' for r in lst)
     fii_line = ""
     if snap.get("fii_dii"):
         fd = snap["fii_dii"]
@@ -183,10 +297,10 @@ td{{padding:7px 9px;border:1px solid #30363d}}
 <div class="sub">As of {snap['as_of']} &middot; momentum(12-1)+reversal blend &middot; universe {snap['universe_size']} stocks</div>
 {fii_line}
 <h2>Top 20 — Long Candidates</h2>
-<table><tr><th>Rank</th><th>Stock</th><th>Price</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th></tr>
+<table><tr><th>Rank</th><th>Stock</th><th>Price</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th><th>Earnings</th></tr>
 {rows(snap['top'], 'long')}</table>
 <h2>Bottom 20 — Avoid / Short Candidates</h2>
-<table><tr><th>Rank</th><th>Stock</th><th>Price</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th></tr>
+<table><tr><th>Rank</th><th>Stock</th><th>Price</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th><th>Earnings</th></tr>
 {rows(snap['bottom'], 'avoid')}</table>
 <p class="disc">Research purposes only. Historical validation shows ~50-51% directional edge (AUC ~0.51).
 Expect roughly half of picks to underperform. Not investment advice.</p>
