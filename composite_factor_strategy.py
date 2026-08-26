@@ -1,8 +1,19 @@
-"""Composite factor strategy: liquidity + short-term reversal, honest OOS eval."""
+"""Composite factor strategy: liquidity + short-term reversal, honest OOS eval.
+
+Significance is reported with Newey-West HAC t-stats (see stats_utils). The
+naive t = mean/(std/sqrt(n)) that earlier versions printed is inflated ~sqrt(10)
+because daily observations of a 10-day forward return overlap by 9 days; it is
+still shown so the inflation is visible, but do not quote it.
+
+Caveat that no statistic can fix: the liquidity+reversal PAIR was selected by
+inspecting this same window. Treat the result as a hypothesis, not a validated
+edge, until it holds on data chosen after the fact.
+"""
 import numpy as np
 import pandas as pd
 
 from pooled_model_v1 import load_symbols, fetch_panel, build_dataset
+from stats_utils import mean_tstats, format_tstats
 
 HORIZON = 10
 COST = 10 / 1e4
@@ -28,8 +39,9 @@ def run(top_k=5):
         if not np.isnan(ic):
             ics.append(ic)
     ics = np.array(ics)
-    print(f"Composite IC: {ics.mean():.4f}  IR={ics.mean() / (ics.std() / np.sqrt(len(ics))):.2f}  "
-          f"pos_days={((ics > 0).mean()) * 100:.0f}%")
+    ic_st = mean_tstats(ics, horizon=HORIZON)
+    print(f"Composite IC: mean={ic_st['mean']:.4f}  pos_days={((ics > 0).mean()) * 100:.0f}%")
+    print("  " + format_tstats("IC != 0", ic_st, horizon=HORIZON))
 
     oos["bucket"] = oos.groupby("date")["score"].transform(
         lambda x: pd.qcut(x, 5, labels=False, duplicates="drop"))
@@ -70,8 +82,11 @@ def run(top_k=5):
         q1 = g.nsmallest(max(len(g) // 5, 1), "score")["fwd_excess"].mean()
         ls.append(q5 - q1)
     ls = np.array(ls)
-    print(f"\nQ5-Q1 daily spread: mean={ls.mean() * 100:.3f}%  "
-          f"t={ls.mean() / (ls.std() / np.sqrt(len(ls))):.2f}")
+    ls_st = mean_tstats(ls, horizon=HORIZON)
+    print(f"\nQ5-Q1 daily spread: mean={ls.mean() * 100:.3f}% per {HORIZON}d")
+    print("  " + format_tstats("Q5-Q1 != 0", ls_st, horizon=HORIZON))
+    print("\nNote: the factor pair was chosen on this same window, so even the "
+          "HAC t-stat is optimistic.")
 
 
 if __name__ == "__main__":
