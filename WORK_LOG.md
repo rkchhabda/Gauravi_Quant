@@ -1,8 +1,40 @@
 # Gauravi AI Trading System - Work Log
 
-**Last Updated:** 2026-08-25  
-**Status:** PIVOTED to pooled cross-sectional factor strategy; 15m prediction removed; weekly ranking product v1 live  
+**Last Updated:** 2026-08-26
+**Status:** PIVOTED to pooled cross-sectional factor strategy; 15m prediction removed; weekly ranking product v1 live
 **Next Session Start:** Paper-trade weekly rankings; add FII/DII data source fallback
+
+> ## ⛔ RETRACTION — applies to every 2026-08-24 section below
+>
+> This log is reverse-chronological. Everything dated **2026-08-24 and earlier** describes the
+> **per-symbol Kronos + ML track, which is retracted.** Those sections still carry
+> "✅ Production Ready" badges and accuracy figures — **70.5% mean over 1,150 predictions,
+> RELIANCE 80.0%, HINDUNILVR 79.1%, 86.6% filtered, "8/10 stocks positive gate added value",
+> "Meta-Learner ROC 0.54 → 0.57-0.63".** None of those numbers should be used, quoted, or sold.
+>
+> Why each is wrong:
+> * **The target is not directional.** `production_walkforward.py` and `enhanced_predictor.py`
+>   label on `close.shift(-h)/close - 1 > 0.02` — "does it rise *more than 2%*". The base rate
+>   of that class is nowhere near 50% and neither file reports it, so "70.5% accuracy" may be
+>   *worse* than always predicting the majority class. This single defect accounts for most of
+>   the gap between these numbers and the ~51% the honest pipeline measures.
+> * **No purge or embargo.** A 10-day forward label with `train_window=120` rows and no gap
+>   means train and test overlap in time.
+> * **~65 features on a 120-row window.** Guaranteed overfit.
+> * **Meta labels were in-sample** — taken from `base_model.predict_proba(X_train)` — and the
+>   meta AUC (0.57–0.63) was scored on the very rows the meta-learner was fitted on. The
+>   "gate added value on 8/10 stocks" conclusion inherits this.
+> * **Macro and Kronos features were constants.** `daily_kronos_pipeline.py` logs
+>   "Generating Kronos features on full history" but `get_kronos_forecast()` returns five
+>   scalars from the final window and broadcasts them to every row (same for `usd_inr` 83.0,
+>   `india_vix` 15.0, `nifty50_ret14d` 0.0). Constant columns carry no training signal and
+>   then jump to live values at prediction time.
+>
+> **What survives** is in `README.md` and `pooled_model_v1.py`: momentum 12-1 at AUC ≈ 0.510,
+> short-term reversal as the best tradable portfolio, everything else at or near random.
+> See also the parallel retraction and t-statistic correction in `accuracy_log.md`.
+>
+> Sections dated 2026-08-25 and later are current. Retraction added 2026-08-26.
 
 ---
 
@@ -20,7 +52,8 @@
    - `video_script.md` — 3-min VO script + 60s Shorts cut
    - `youtube_upload_pack.md` — titles, description, tags, thumbnail concepts, pinned comment
    - `thumbnail.html` — 1280×720 screenshot-ready thumbnail
-4. Brand renamed to **Guvravi Quant** (repo/folder rename pending user: GitHub Settings + local folder + `git remote set-url`)
+4. Brand is **Gauravi Quant** (repo/folder rename pending user: GitHub Settings + local folder + `git remote set-url`)
+   — note: earlier drafts of this line and `colab_run.ipynb` misspelled it "Guvravi"; canonical spelling is **Gauravi**, repo `Gauravi_Quant`
 
 ### Next Steps
 1. User: complete repo rename + push latest changes (`git add -A; git commit -m "earnings flag + fii/dii csv + marketing"; git push`)

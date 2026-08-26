@@ -43,7 +43,20 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "Weekly ranking snapshot $(date +%F)"
-            git push
+            # Retry against a moving remote: a manual push landing in the same
+            # window would otherwise fail the run on a non-fast-forward.
+            for attempt in 1 2 3; do
+              if git push; then
+                echo "Pushed on attempt $attempt"
+                break
+              fi
+              echo "Push $attempt failed, rebasing on origin/main"
+              git pull --rebase --autostash origin main
+              if [ "$attempt" = "3" ]; then
+                echo "::error::Could not push after 3 attempts"
+                exit 1
+              fi
+            done
           fi
 
       - uses: actions/upload-pages-artifact@v3

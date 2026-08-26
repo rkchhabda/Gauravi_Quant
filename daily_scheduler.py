@@ -163,9 +163,9 @@ def send_alerts(results, alert_type):
             email_system.send_daily_predictions(results)
         else:
             print("\n[EMAIL] System not configured. Set environment variables:")
-            print("  KRONOS_EMAIL_ADDRESS=your.email@gmail.com")
-            print("  KRONOS_EMAIL_PASSWORD=your_app_password")
-            print("  KRONOS_ALERT_RECIPIENT=recipient@email.com")
+            print("  GAURAVI_EMAIL_ADDRESS=your.email@gmail.com")
+            print("  GAURAVI_EMAIL_PASSWORD=your_app_password")
+            print("  GAURAVI_ALERT_RECIPIENT=recipient@email.com")
             
     elif alert_type == "telegram":
         telegram_system = get_telegram_system()
@@ -173,8 +173,8 @@ def send_alerts(results, alert_type):
             telegram_system.send_daily_predictions(results)
         else:
             print("\n[TELEGRAM] System not configured. Set environment variables:")
-            print("  KRONOS_TELEGRAM_BOT_TOKEN=your_bot_token")
-            print("  KRONOS_TELEGRAM_CHAT_ID=your_chat_id")
+            print("  GAURAVI_TELEGRAM_BOT_TOKEN=your_bot_token")
+            print("  GAURAVI_TELEGRAM_CHAT_ID=your_chat_id")
 
 
 def schedule_daily_run(time_str="15:30"):

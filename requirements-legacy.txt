@@ -1,0 +1,31 @@
+# Legacy / optional stack: Kronos foundation model, the per-symbol ML predictors,
+# the daily scheduler and the Jinja2 HTML advisor.
+#
+# NOT needed for the weekly ranking product or the test suite -- install only if
+# you are running market_advisor.py, daily_kronos_pipeline.py, enhanced_predictor.py,
+# production_walkforward.py or daily_scheduler.py.
+#
+# NOTE: the per-symbol ML accuracy claims from this stack are RETRACTED
+# (see the banners in accuracy_log.md and WORK_LOG.md). Kept runnable for
+# reference, not for signal generation.
+#
+#     pip install -r requirements.txt -r requirements-legacy.txt
+
+# Kronos foundation model (~400MB download on first run) -- also needs the
+# kronos_lib/ checkout, see README "Optional: Kronos Foundation Model".
+torch>=2.2
+transformers>=4.40
+huggingface_hub>=0.23
+safetensors>=0.4
+einops>=0.7
+
+# Per-symbol ensemble predictors
+lightgbm>=4.0
+optuna>=3.6
+joblib>=1.3
+
+# Reporting / scheduling
+jinja2>=3.1
+matplotlib>=3.8
+tqdm>=4.66
+schedule>=1.2

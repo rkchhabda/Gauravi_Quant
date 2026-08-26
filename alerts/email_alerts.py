@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
 """
-Email Alert System for Kronos Trading System
+Email Alert System for the Gauravi advisory system.
 Sends daily predictions and trade signals via email.
 
 Configuration:
     Set environment variables:
-    - KRONOS_EMAIL_ADDRESS: Your email address
-    - KRONOS_EMAIL_PASSWORD: App password (not regular password)
-    - KRONOS_ALERT_RECIPIENT: Recipient email address
+    - GAURAVI_EMAIL_ADDRESS: Your email address
+    - GAURAVI_EMAIL_PASSWORD: App password (not regular password)
+    - GAURAVI_ALERT_RECIPIENT: Recipient email address
+
+    The legacy KRONOS_* names are still accepted as a fallback.
 
 Gmail Setup:
     1. Enable 2FA on your Google account
     2. Go to Security > App passwords
     3. Generate an app password for "Mail"
-    4. Use that password in KRONOS_EMAIL_PASSWORD
+    4. Use that password in GAURAVI_EMAIL_PASSWORD
 """
 
 import os
@@ -25,20 +27,28 @@ from pathlib import Path
 from datetime import datetime
 
 
+def env(suffix, default=""):
+    """Read GAURAVI_<suffix>, falling back to the legacy KRONOS_<suffix>."""
+    return (os.environ.get(f"GAURAVI_{suffix}")
+            or os.environ.get(f"KRONOS_{suffix}")
+            or default)
+
+
 class EmailAlertSystem:
     def __init__(self):
-        self.sender = os.environ.get("KRONOS_EMAIL_ADDRESS", "")
-        self.password = os.environ.get("KRONOS_EMAIL_PASSWORD", "")
-        self.recipient = os.environ.get("KRONOS_ALERT_RECIPIENT", self.sender)
-        
+        self.sender = env("EMAIL_ADDRESS")
+        self.password = env("EMAIL_PASSWORD")
+        self.recipient = env("ALERT_RECIPIENT", self.sender)
+
     def is_configured(self):
         """Check if email is properly configured"""
         return bool(self.sender and self.password and self.recipient)
-    
+
     def send_alert(self, subject, body):
         """Send email alert"""
         if not self.is_configured():
-            print("[EMAIL] Not configured. Set KRONOS_EMAIL_ADDRESS, KRONOS_EMAIL_PASSWORD, KRONOS_ALERT_RECIPIENT")
+            print("[EMAIL] Not configured. Set GAURAVI_EMAIL_ADDRESS, "
+                  "GAURAVI_EMAIL_PASSWORD, GAURAVI_ALERT_RECIPIENT")
             return False
         
         try:
@@ -242,6 +252,6 @@ if __name__ == "__main__":
     else:
         print("Email system not configured!")
         print("\nSet these environment variables:")
-        print("  KRONOS_EMAIL_ADDRESS=your.email@gmail.com")
-        print("  KRONOS_EMAIL_PASSWORD=your_app_password")
-        print("  KRONOS_ALERT_RECIPIENT=recipient@email.com")
+        print("  GAURAVI_EMAIL_ADDRESS=your.email@gmail.com")
+        print("  GAURAVI_EMAIL_PASSWORD=your_app_password")
+        print("  GAURAVI_ALERT_RECIPIENT=recipient@email.com")

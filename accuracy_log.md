@@ -1,8 +1,40 @@
-# Accuracy Improvement Log – Core Model (>70% Directional Accuracy)
+# Accuracy Improvement Log – Core Model (HISTORICAL / RETRACTED)
 
-**Date**: 2026-08-23  
-**Target**: ≥70% directional accuracy on next 15-minute candle for Indian large-cap stocks  
-**Status**: ✅ **ACHIEVED** – 80.0% directional accuracy on proof_test.py
+> ## ⛔ RETRACTION — read this before anything below
+>
+> **The "80.0% directional accuracy" headline in this file is withdrawn.** It does not
+> survive re-examination, and the 15-minute intraday target it refers to was later
+> measured at **AUC ≈ 0.50 (no signal)** and removed from the project. Later sections of
+> this same file document that removal.
+>
+> Specific defects behind the retracted number:
+> * **`proof_test.py` was not a held-out test.** It reported direction matches on a
+>   handful of hand-picked symbols with no purge/embargo against the forecast horizon,
+>   and with no base-rate comparison — so "80%" is 8 of 10 coin flips, not an edge.
+> * **The label was not directional.** The predictors behind these numbers
+>   (`production_walkforward.py`, `enhanced_predictor.py`) threshold on
+>   `fwd_ret > +2%`, i.e. "does it rise *more than 2%*". That class is far from 50%
+>   prevalence, so accuracy against it is not comparable to a coin flip and may be
+>   *worse* than always predicting the majority class. Neither file reports the base rate.
+> * **Macro and Kronos features were constants during training** — a single scalar
+>   broadcast to every row (see `daily_kronos_pipeline.py`), then replaced by a live
+>   value at prediction time. Train/serve mismatch, zero training information.
+> * **Meta-learner scores were in-sample** — labels came from
+>   `base_model.predict_proba(X_train)` and the meta AUC was scored on its own fit rows.
+>
+> **What is actually validated** lives in `README.md` and `pooled_model_v1.py`:
+> momentum 12-1 at AUC ≈ 0.510, short-term reversal as the best tradable portfolio,
+> everything else at or near random. Assume nothing below this banner is a live claim;
+> it is kept only as a record of what was tried.
+>
+> Retracted 2026-08-26. Per-symbol ML claims in `WORK_LOG.md` are retracted for the
+> same reasons.
+
+**Date**: 2026-08-23
+**Target**: ≥70% directional accuracy on next 15-minute candle for Indian large-cap stocks
+**Status**: ❌ **RETRACTED** — originally logged as "✅ ACHIEVED – 80.0% on proof_test.py";
+see the retraction banner above. The 15-minute product was subsequently killed for having
+no measurable signal.
 
 ---
 
@@ -129,11 +161,8 @@ Layer 4: Intraday Execution (15m VWAP/Trend) → Entry/exit timing
 ### Production
 9. **Production deployment** – Schedule daily runs, add alerting, position sizing, risk management
 
-## Files Modified
-
-## Next Steps / Recommendations
-
-## Files Modified
+*(The four items above are superseded by the pooled-model findings below; the per-symbol
+Kronos+ML track they refer to was abandoned. Kept as a record.)*
 
 ---
 
@@ -149,21 +178,38 @@ purged walk-forward (10-day embargo), 2-month test folds, non-overlapping portfo
 | XGBoost pooled, raw features, 10d | AUC 0.497 | No edge |
 | XGBoost pooled, cross-sectional z-scores, 10d | AUC 0.506 | Negligible |
 | XGBoost pooled + momentum/liquidity factors, 21d | AUC 0.501 | No edge |
-| **Composite: liquidity rank + reversal rank** | **IC 0.046, IR 6.2, t=4.38** | **Real but modest** |
+| **Composite: liquidity rank + reversal rank** | IC 0.046, IR 6.2, ~~t=4.38~~ → **t ≈ 1.4 corrected** | **Suggestive, not significant** |
+
+> ⚠️ **Correction (2026-08-26): the t-statistics in this section were inflated ~3.2×.**
+> `composite_factor_strategy.py` and `factor_ic_analysis.py` compute
+> `t = ics.mean() / (ics.std() / sqrt(n))` over **daily-sampled 10-day** returns.
+> Consecutive observations share 9 of their 10 days, so the effective sample size is
+> roughly `n / 10` and the correct denominator is ~`sqrt(10)` ≈ 3.2× larger.
+> **t = 4.38 becomes ≈ 1.4, which is not significant at any conventional level**, and
+> IR 6.2 falls proportionally. Separately, the liquidity+reversal *pair itself was chosen*
+> by inspecting the same 2-year window it is then scored on, so even the corrected figure
+> is optimistic. Treat this composite as a hypothesis, not a validated edge.
 
 ### Composite Factor Findings (last 2y OOS, 40k predictions)
 - **Liquidity** (20d dollar volume): strongest positive signal, consistent 63% of days
 - **Short-term reversal**: ret_20/RSI/SMA-distance strongly NEGATIVE IC – recent losers bounce
 - Quintiles monotonic: Q1 −0.10% → Q5 +0.31% excess per 10 days
-- Q5−Q1 spread: **+0.43% per 10 days (~10% annualized, t=4.38)**
+- Q5−Q1 spread: **+0.43% per 10 days (~10% annualized)** — the `t=4.38` originally quoted
+  here is inflated; see the correction above (corrected t ≈ 1.4)
 - Top-5 concentrated picks: only Sharpe 0.51 – signal works at breadth, NOT concentration
 - ML models DILUTE these two clean factors; simple transparent composite beats XGBoost
 
 ### Implications for Monetization
 1. Kill the 15-minute prediction idea permanently – no signal at any honest test
 2. Kronos/XGBoost per-symbol models: not validated, do not sell signals from them
-3. The sellable product is a **weekly NIFTY-100 stock RANKING report** built on the
-   liquidity+reversal composite (expect ~52% hit rate, ~6-8% annualized excess vs NIFTY)
+3. The sellable product is a **weekly NIFTY-100 stock RANKING report**.
+   *Note (2026-08-26): this line prescribes the liquidity+reversal composite, but the
+   product that actually shipped (`weekly_ranking_report.py`) uses
+   **momentum(12-1) + reversal**, not liquidity+reversal. That was the right call —
+   momentum 12-1 is the only factor with a consistent positive AUC (~0.510) across the
+   full 2023–26 sample, whereas the liquidity leg is regime-dependent and its
+   significance does not survive the overlap correction above. Expect ~52% hit rate;
+   do not quote the 6-8% annualized excess as an expectation for the shipped blend.*
 4. Before selling: paper-trade rankings for 3 months, add FII/DII flow + earnings-date features,
    verify live IC stays > 0.03
 

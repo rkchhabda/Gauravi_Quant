@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-Telegram Alert System for Kronos Trading System
+Telegram Alert System for the Gauravi advisory system.
 Sends daily predictions and trade signals via Telegram.
 
 Setup:
     1. Create a Telegram bot via @BotFather
     2. Get your chat ID by messaging @userinfobot
     3. Set environment variables:
-       - KRONOS_TELEGRAM_BOT_TOKEN: Your bot token from BotFather
-       - KRONOS_TELEGRAM_CHAT_ID: Your chat ID
+       - GAURAVI_TELEGRAM_BOT_TOKEN: Your bot token from BotFather
+       - GAURAVI_TELEGRAM_CHAT_ID: Your chat ID
+
+    The legacy KRONOS_* names are still accepted as a fallback.
 """
 
 import os
@@ -17,20 +19,28 @@ import requests
 from datetime import datetime
 
 
+def env(suffix, default=""):
+    """Read GAURAVI_<suffix>, falling back to the legacy KRONOS_<suffix>."""
+    return (os.environ.get(f"GAURAVI_{suffix}")
+            or os.environ.get(f"KRONOS_{suffix}")
+            or default)
+
+
 class TelegramAlertSystem:
     def __init__(self):
-        self.bot_token = os.environ.get("KRONOS_TELEGRAM_BOT_TOKEN", "")
-        self.chat_id = os.environ.get("KRONOS_TELEGRAM_CHAT_ID", "")
+        self.bot_token = env("TELEGRAM_BOT_TOKEN")
+        self.chat_id = env("TELEGRAM_CHAT_ID")
         self.base_url = f"https://api.telegram.org/bot{self.bot_token}"
-        
+
     def is_configured(self):
         """Check if Telegram is properly configured"""
         return bool(self.bot_token and self.chat_id)
-    
+
     def send_message(self, text, parse_mode="HTML"):
         """Send message via Telegram"""
         if not self.is_configured():
-            print("[TELEGRAM] Not configured. Set KRONOS_TELEGRAM_BOT_TOKEN and KRONOS_TELEGRAM_CHAT_ID")
+            print("[TELEGRAM] Not configured. Set GAURAVI_TELEGRAM_BOT_TOKEN "
+                  "and GAURAVI_TELEGRAM_CHAT_ID")
             return False
         
         try:
@@ -136,8 +146,8 @@ if __name__ == "__main__":
     else:
         print("Telegram system not configured!")
         print("\nSet these environment variables:")
-        print("  KRONOS_TELEGRAM_BOT_TOKEN=your_bot_token")
-        print("  KRONOS_TELEGRAM_CHAT_ID=your_chat_id")
+        print("  GAURAVI_TELEGRAM_BOT_TOKEN=your_bot_token")
+        print("  GAURAVI_TELEGRAM_CHAT_ID=your_chat_id")
         print("\nSetup steps:")
         print("1. Message @BotFather on Telegram to create a bot")
         print("2. Message @userinfobot to get your chat ID")
