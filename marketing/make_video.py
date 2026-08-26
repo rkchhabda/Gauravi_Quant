@@ -6,6 +6,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 W, H = 1920, 1080
+FPS = 30
 BG = (13, 17, 23)
 PANEL = (22, 27, 34)
 TEXT = (230, 237, 243)
@@ -14,6 +15,7 @@ GREEN = (63, 185, 80)
 RED = (248, 81, 73)
 BLUE = (88, 166, 255)
 GOLD = (210, 153, 34)
+VOICE = "en-IN-NeerjaNeural"
 ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = ROOT / "marketing"
 TMP = Path(tempfile.mkdtemp(prefix="gauravi_video_"))
@@ -46,6 +48,15 @@ def center_text(draw, y, text, f, fill, lh=None):
     for ln in wrap(draw, text, f, W - 320):
         tw = draw.textlength(ln, font=f)
         draw.text(((W - tw) / 2, y), ln, font=f, fill=fill)
+        y += lh
+    return y
+
+
+def box_center_text(draw, x0, y, w, text, f, fill, lh=None):
+    lh = lh or int(f.size * 1.35)
+    for ln in wrap(draw, text, f, w - 80):
+        tw = draw.textlength(ln, font=f)
+        draw.text((x0 + (w - tw) / 2, y), ln, font=f, fill=fill)
         y += lh
     return y
 
@@ -118,15 +129,8 @@ def slide_how():
         x0 = W / 2 - bw - 40 if i == 0 else W / 2 + 40
         x1 = x0 + bw
         d.rounded_rectangle([x0, 400, x1, 400 + bh], radius=24, fill=PANEL, outline=col, width=3)
-        ft = font(56)
-        tw = d.textlength(title, font=ft)
-        d.text(((x0 + x1 - tw) / 2, 450), title, font=ft, fill=col)
-        fs = font(36, False)
-        yy = 550
-        for ln in wrap(d, body, fs, bw - 80):
-            tw = d.textlength(ln, font=fs)
-            d.text(((x0 + x1 - tw) / 2, yy), ln, font=fs, fill=TEXT)
-            yy += 52
+        box_center_text(d, x0, 450, bw, title, font(56), col, lh=70)
+        box_center_text(d, x0, 550, bw, body, font(36, False), TEXT, lh=52)
     center_text(d, 880, "No rumors. No tips. No gut feeling. Just data, ranked, every week.", font(42, False), MUTED)
     footer(d, 3)
     return img
@@ -136,26 +140,22 @@ def slide_proof():
     img, d = base_slide()
     y = center_text(d, 160, "Tested, Not Promised", font(96), TEXT)
     stats = [
-        ("95,000+", "out-of-sample predictions"),
-        ("3 years", "of NIFTY-100 history"),
-        ("Walk-forward", "leak-proof validation"),
+        ("95,000+", "out-of-sample predictions", BLUE),
+        ("3 years", "of NIFTY-100 history", BLUE),
+        ("Walk-forward", "leak-proof validation", BLUE),
     ]
-    bw, bh = 500, 240
-    total = bw * 3 + 80 * 2
+    bw, bh = 520, 260
+    gap = 60
+    total = bw * 3 + gap * 2
     x0 = (W - total) / 2
-    for i, (big, small) in enumerate(stats):
-        cx = x0 + i * (bw + 80)
-        d.rounded_rectangle([cx, 360, cx + bw, 360 + bh], radius=24, fill=PANEL, outline=BLUE, width=3)
-        fb = font(72)
+    for i, (big, small, col) in enumerate(stats):
+        cx = x0 + i * (bw + gap)
+        d.rounded_rectangle([cx, 360, cx + bw, 360 + bh], radius=24, fill=PANEL, outline=col, width=3)
+        fb = font(64)
         tw = d.textlength(big, font=fb)
-        d.text(((cx + bw - tw) / 2, 400), big, font=fb, fill=BLUE)
-        fs = font(32, False)
-        yy = 510
-        for ln in wrap(d, small, fs, bw - 60):
-            tw = d.textlength(ln, font=fs)
-            d.text(((cx + bw - tw) / 2, yy), ln, font=fs, fill=MUTED)
-            yy += 46
-    y = center_text(d, 720, "Directional accuracy ≈ 52% — not 90%. We show it upfront.", font(52), RED)
+        d.text((cx + (bw - tw) / 2, 410), big, font=fb, fill=col)
+        box_center_text(d, cx, 520, bw, small, font(32, False), MUTED, lh=46)
+    y = center_text(d, 730, "Directional accuracy ≈ 52% — not 90%. We show it upfront.", font(52), RED)
     center_text(d, y + 10, "Small edges + consistency + diversification = how quant funds actually work.", font(38, False), MUTED)
     footer(d, 4)
     return img
@@ -218,41 +218,59 @@ SCENES = [
 ]
 
 
-def tts(text, wav_path):
-    ps = (
-        "Add-Type -AssemblyName System.Speech; "
-        "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; "
-        "$s.SetOutputToWaveFile('%s'); "
-        "$s.Rate = -1; "
-        "$s.Speak('%s'); "
-        "$s.Dispose()"
-    ) % (str(wav_path).replace("'", "''"), text.replace("'", "''"))
-    subprocess.run(["powershell", "-NoProfile", "-Command", ps], check=True)
+def tts(text, mp3_path):
+    subprocess.run(
+        ["edge-tts", "--voice", VOICE, "--text", text, "--write-media", str(mp3_path)],
+        check=True,
+    )
+
+
+def audio_duration(path):
+    r = subprocess.run(
+        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+         "-of", "default=nw=1:nk=1", str(path)],
+        capture_output=True, text=True, check=True,
+    )
+    return float(r.stdout.strip())
 
 
 def main():
     png_dir = OUT_DIR / "slides_png"
     png_dir.mkdir(exist_ok=True)
-    wav_dir = TMP / "wav"
-    wav_dir.mkdir()
+    audio_dir = TMP / "audio"
+    audio_dir.mkdir()
 
     for i, (render, vo) in enumerate(SCENES, 1):
         png = png_dir / f"scene_{i}.png"
         render().save(png)
-        wav = wav_dir / f"scene_{i}.wav"
-        print(f"[{i}/6] rendering slide + voiceover ...")
-        tts(vo, wav)
+        print(f"[{i}/6] voiceover ({VOICE}) ...")
+        mp3 = audio_dir / f"scene_{i}.mp3"
+        tts(vo, mp3)
+        adur = audio_duration(mp3)
+        dur = round(adur + 1.2, 2)
+        frames = int(dur * FPS) + 1
+        fade_out = dur - 0.6
+        if i % 2 == 1:
+            zexpr = f"'min(1+0.10*on/{frames},1.10)'"
+        else:
+            zexpr = f"'max(1.10-0.10*on/{frames},1.0)'"
+        vf = (
+            f"scale=2688:1512,"
+            f"zoompan=z={zexpr}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'"
+            f":d={frames}:s=1920x1080:fps={FPS},"
+            f"fade=t=in:st=0:d=0.5,fade=t=out:st={fade_out}:d=0.6,format=yuv420p"
+        )
         clip = TMP / f"scene_{i}.mp4"
+        print(f"[{i}/6] animating ({dur:.1f}s) ...")
         subprocess.run([
             "ffmpeg", "-y", "-loglevel", "error",
-            "-loop", "1", "-framerate", "30", "-i", str(png),
-            "-i", str(wav),
-            "-filter_complex", "[1:a]apad=pad_dur=1.0[a]",
-            "-map", "0:v", "-map", "[a]",
+            "-i", str(png), "-i", str(mp3),
+            "-filter_complex", f"[0:v]{vf}[v];[1:a]apad=whole_dur={dur}[a]",
+            "-map", "[v]", "-map", "[a]",
+            "-t", str(dur),
             "-c:v", "libx264", "-preset", "medium", "-tune", "stillimage",
-            "-pix_fmt", "yuv420p",
-            "-c:a", "aac", "-b:a", "128k",
-            "-shortest", str(clip),
+            "-c:a", "aac", "-b:a", "128k", "-ar", "44100",
+            str(clip),
         ], check=True)
 
     lst = TMP / "list.txt"
