@@ -1,6 +1,15 @@
 # NIFTY 100 STOCK LIST - Top 100 Indian Stocks by Market Cap
 # Format: SYMBOL.NS, Company Name
-# Updated: 2025
+# Updated: 2026-08-26
+#
+# Verified live on Yahoo Finance 2026-08-26. Three stale tickers were replaced
+# with their current successors (all confirmed to return price data):
+#   ZOMATO.NS      -> ETERNAL.NS  (Zomato renamed to Eternal Ltd, 2025)
+#   TATAMOTORS.NS  -> TMPV.NS     (Tata Motors passenger-vehicle entity post-demerger)
+#   LTI.NS         -> DMART.NS    (LTI merged into LTIMindtree, not carried by Yahoo;
+#                                  replaced with Avenue Supermarts to keep the count at 100)
+# fetch_panel() skips any ticker Yahoo drops (needs >=300 daily bars), so a
+# future stale name degrades the universe by one rather than breaking the run.
 
 
 # NIFTY 100 Constituents (Representative List)
@@ -25,7 +34,7 @@ AXISBANK.NS, Axis Bank Ltd
 ASIANPAINT.NS, Asian Paints Ltd
 MARUTI.NS, Maruti Suzuki India Ltd
 SUNPHARMA.NS, Sun Pharmaceutical Industries Ltd
-TATAMOTORS.NS, Tata Motors Ltd
+TMPV.NS, Tata Motors Passenger Vehicles Ltd
 ADANIPORTS.NS, Adani Ports and Special Economic Zone Ltd
 TATASTEEL.NS, Tata Steel Ltd
 NTPC.NS, NTPC Ltd
@@ -76,7 +85,7 @@ AMBUJACEM.NS, Ambuja Cements Ltd
 # Next 30 (61-90)
 ADANIGREEN.NS, Adani Green Energy Ltd
 VEDL.NS, Vedanta Ltd
-LTI.NS, Larsen & Toubro Infotech Ltd
+DMART.NS, Avenue Supermarts Ltd
 GICRE.NS, General Insurance Corporation of India
 BOSCHLTD.NS, Bosch Ltd
 FEDERALBNK.NS, Federal Bank Ltd
@@ -99,7 +108,7 @@ PHOENIXLTD.NS, Phoenix Mills Ltd
 TRENT.NS, Trent Ltd
 RAJESHEXPO.NS, Rajesh Exports Ltd
 TATAELXSI.NS, Tata Elxsi Ltd
-ZOMATO.NS, Zomato Ltd
+ETERNAL.NS, Eternal Ltd (formerly Zomato)
 PAYTM.NS, Paytm
 NYKAA.NS, Nykaa
 POLICYBZR.NS, Policybazaar

@@ -58,11 +58,25 @@ def _fii_dii_nse():
 
 
 def _fii_dii_moneycontrol():
+    """Scrape the moneycontrol FII/DII activity table.
+
+    Fetch with requests (so the User-Agent actually applies) and hand the HTML
+    to read_html via StringIO. The previous version passed the headers as
+    `storage_options=`, which read_html only forwards to fsspec for non-HTTP
+    paths -- so the request went out unheaded and this tier never worked.
+    Requires lxml (see requirements.txt); returns None if it is missing.
+    """
     try:
+        import io
+
         import requests
-        h = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-        tables = pd.read_html("https://www.moneycontrol.com/stocks/marketstats/fii_dii_activity/index.html",
-                              storage_options=h) if hasattr(pd, "read_html") else []
+        h = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+             "Accept-Language": "en-US,en;q=0.9"}
+        url = ("https://www.moneycontrol.com/stocks/marketstats/"
+               "fii_dii_activity/index.html")
+        resp = requests.get(url, headers=h, timeout=15)
+        resp.raise_for_status()
+        tables = pd.read_html(io.StringIO(resp.text))
         for t in tables:
             cols = [str(c).lower() for c in t.columns]
             flat = " ".join(cols)
@@ -85,8 +99,9 @@ def _fii_dii_moneycontrol():
                 return {"source": "moneycontrol", "date": date,
                         "fii_net_cr": num(last[fii_col]),
                         "dii_net_cr": num(last[dii_col]) if dii_col else 0.0}
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[FII/DII] moneycontrol tier unavailable ({type(e).__name__}); "
+              f"falling back to CSV")
     return None
 
 
@@ -149,7 +164,12 @@ def fetch_earnings_within(symbols, days=12):
     return result
 
 
-def generate(top_n=20):
+def pct(v):
+    """Render a percentage cell, tolerating missing history."""
+    return "n/a" if v is None else f"{v}%"
+
+
+def generate(top_n=20, write_html_out=True):
     symbols = load_symbols()
     close_panel, highs, lows, vols = fetch_panel(symbols, period="3y")
     df = build_dataset(close_panel, highs, lows, vols, horizon=10)
@@ -175,16 +195,22 @@ def generate(top_n=20):
 
     fii = fetch_fii_dii_flow()
 
+    latest_ts = pd.to_datetime(latest_date)
+
     def row(r):
         sym = r["symbol"]
-        c = close_panel[sym].dropna()
-        mom_raw = float(c.iloc[-1] / c.iloc[-253] - 1) if len(c) > 252 else np.nan
-        ret20_raw = float(c.pct_change(20).iloc[-1])
+        # Truncate at the ranking date and use the SAME factor definitions as
+        # pooled_model_v1.build_dataset, so the displayed numbers reconcile
+        # with score_raw. mom_12_1 skips the most recent month (shift 21) and
+        # looks back 12 months (shift 252) -- it is NOT a plain 12-month return.
+        c = close_panel[sym].dropna().loc[:latest_ts]
+        mom_raw = float(c.iloc[-22] / c.iloc[-253] - 1) if len(c) >= 253 else np.nan
+        ret20_raw = float(c.iloc[-1] / c.iloc[-21] - 1) if len(c) >= 21 else np.nan
         return {
             "rank": int(r["rank"]), "symbol": sym.replace(".NS", ""),
             "close": round(float(c.iloc[-1]), 1),
             "mom_12_1_pct": round(mom_raw * 100, 1) if not np.isnan(mom_raw) else None,
-            "ret20_pct": round(ret20_raw * 100, 1),
+            "ret20_pct": round(ret20_raw * 100, 1) if not np.isnan(ret20_raw) else None,
             "score": round(float(r["score_raw"]), 3),
             "earnings_soon": bool(r["earnings_soon"]),
         }
@@ -227,16 +253,26 @@ def generate(top_n=20):
            "|---|---|---|---|---|---|---|"]
     for r in top:
         flag = "⚠️ this week" if r["earnings_soon"] else "clear"
-        md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {r['mom_12_1_pct']}% "
-                  f"| {r['ret20_pct']}% | {r['score']} | {flag} |")
+        md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {pct(r['mom_12_1_pct'])} "
+                  f"| {pct(r['ret20_pct'])} | {r['score']} | {flag} |")
     md += ["", "## Bottom 20 (Avoid / Short candidates)", "",
            "| Rank | Stock | Price | 12-1M Mom% | 20d Ret% | Score | Earnings |",
            "|---|---|---|---|---|---|---|"]
     for r in bottom:
         flag = "⚠️ this week" if r["earnings_soon"] else "clear"
-        md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {r['mom_12_1_pct']}% "
-                  f"| {r['ret20_pct']}% | {r['score']} | {flag} |")
+        md.append(f"| {r['rank']} | {r['symbol']} | {r['close']} | {pct(r['mom_12_1_pct'])} "
+                  f"| {pct(r['ret20_pct'])} | {r['score']} | {flag} |")
     md += ["",
+           "**Column definitions**",
+           "",
+           "* `12-1M Mom%` — 12-month price return **skipping the most recent month** "
+           "(close 21 sessions ago ÷ close 252 sessions ago − 1). Skipping the last month is "
+           "deliberate: it removes the short-term reversal effect that the next column captures.",
+           "* `20d Ret%` — plain 20-session return; enters the score **inverted** "
+           "(recent losers score higher).",
+           "* `Score` — mean of the two cross-sectional percentile ranks: "
+           "`(rank(12-1 mom) + rank(−20d ret)) / 2`. 1.0 = best in universe.",
+           "",
            "⚠️ *Earnings flag = company reports results within ~12 days; expect high volatility "
            "around results regardless of ranking.*",
            "",
@@ -249,7 +285,7 @@ def generate(top_n=20):
         f.write("\n".join(md))
 
     html_path = None
-    if not args_html():
+    if write_html_out:
         html_path = write_html(snapshot, md_path)
 
     print(f"\nTOP 5 : " + ", ".join(r["symbol"] for r in top[:5]))
@@ -261,15 +297,11 @@ def generate(top_n=20):
     return snapshot
 
 
-def args_html():
-    return "--no-html" in __import__("sys").argv
-
-
 def write_html(snap, md_path):
     rows = lambda lst, cls: "".join(
         f'<tr class="{cls}"><td>{r["rank"]}</td><td><b>{r["symbol"]}</b></td>'
-        f'<td>{r["close"]}</td><td>{r["mom_12_1_pct"]}%</td>'
-        f'<td>{r["ret20_pct"]}%</td><td>{r["score"]}</td>'
+        f'<td>{r["close"]}</td><td>{pct(r["mom_12_1_pct"])}</td>'
+        f'<td>{pct(r["ret20_pct"])}</td><td>{r["score"]}</td>'
         f'<td>{"⚠️ this week" if r["earnings_soon"] else "clear"}</td></tr>' for r in lst)
     fii_line = ""
     if snap.get("fii_dii"):
@@ -302,6 +334,12 @@ td{{padding:7px 9px;border:1px solid #30363d}}
 <h2>Bottom 20 — Avoid / Short Candidates</h2>
 <table><tr><th>Rank</th><th>Stock</th><th>Price</th><th>12-1M Mom%</th><th>20d Ret%</th><th>Score</th><th>Earnings</th></tr>
 {rows(snap['bottom'], 'avoid')}</table>
+<p class="disc"><b>Column definitions.</b>
+<b>12-1M Mom%</b> = 12-month return <i>skipping the most recent month</i>
+(close 21 sessions ago &divide; close 252 sessions ago &minus; 1) &mdash; the skip is deliberate, it
+removes the short-term reversal the next column captures.
+<b>20d Ret%</b> = plain 20-session return, entering the score <i>inverted</i> (recent losers rank higher).
+<b>Score</b> = mean of the two cross-sectional percentile ranks, <code>(rank(12-1 mom) + rank(&minus;20d ret)) / 2</code>; 1.0 = best in universe.</p>
 <p class="disc">Research purposes only. Historical validation shows ~50-51% directional edge (AUC ~0.51).
 Expect roughly half of picks to underperform. Not investment advice.</p>
 </div></body></html>"""
@@ -314,5 +352,7 @@ Expect roughly half of picks to underperform. Not investment advice.</p>
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--top-n", type=int, default=20)
-    known, _ = ap.parse_known_args()
-    generate(top_n=known.top_n)
+    ap.add_argument("--no-html", action="store_true",
+                    help="write markdown + JSON only, skip the HTML report")
+    args = ap.parse_args()
+    generate(top_n=args.top_n, write_html_out=not args.no_html)
