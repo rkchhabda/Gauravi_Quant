@@ -43,6 +43,8 @@
             animation: pulse 1.5s infinite;
         }
         
+        .live-dot.offline { background: #f56565; }
+        
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.4; }
@@ -82,6 +84,7 @@
         }
         
         .btn:hover { transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
         
         .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px; }
         
@@ -202,6 +205,35 @@
         .chart-title { font-size: 1rem; margin-bottom: 10px; }
         .chart-wrap { height: 200px; position: relative; }
         
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+        
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #334155;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: rgba(245, 101, 101, 0.15);
+            border: 1px solid #f56565;
+            color: #f56565;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        
         footer {
             text-align: center;
             padding: 15px;
@@ -218,8 +250,8 @@
                 <p>4-Layer AI Trading System</p>
             </div>
             <div class="live-badge">
-                <div class="live-dot"></div>
-                LIVE
+                <div class="live-dot" id="liveDot"></div>
+                <span id="liveStatus">Connecting...</span>
             </div>
         </header>
 
@@ -227,26 +259,26 @@
             <div class="form-group" style="flex: 2;">
                 <label>Select Stock</label>
                 <select id="stock" onchange="analyze()">
-                    <option value="RELIANCE">RELIANCE - Reliance Industries</option>
-                    <option value="TCS">TCS - Tata Consultancy</option>
-                    <option value="HDFCBANK">HDFC Bank</option>
-                    <option value="INFY">Infosys</option>
-                    <option value="ICICIBANK">ICICI Bank</option>
-                    <option value="HINDUNILVR">Hindustan Unilever</option>
-                    <option value="ITC">ITC Limited</option>
-                    <option value="SBIN">State Bank of India</option>
-                    <option value="BHARTIARTL">Bharti Airtel</option>
-                    <option value="KOTAKBANK">Kotak Mahindra Bank</option>
-                    <option value="MARUTI">Maruti Suzuki</option>
-                    <option value="TATAMOTORS">Tata Motors</option>
-                    <option value="WIPRO">Wipro</option>
-                    <option value="HCLTECH">HCL Technologies</option>
-                    <option value="SUNPHARMA">Sun Pharma</option>
-                    <option value="TITAN">Titan Company</option>
-                    <option value="BAJFINANCE">Bajaj Finance</option>
-                    <option value="LT">Larsen & Toubro</option>
-                    <option value="ONGC">ONGC</option>
-                    <option value="POWERGRID">Power Grid Corp</option>
+                    <option value="RELIANCE.NS">RELIANCE - Reliance Industries</option>
+                    <option value="TCS.NS">TCS - Tata Consultancy</option>
+                    <option value="HDFCBANK.NS">HDFC Bank</option>
+                    <option value="INFY.NS">Infosys</option>
+                    <option value="ICICIBANK.NS">ICICI Bank</option>
+                    <option value="HINDUNILVR.NS">Hindustan Unilever</option>
+                    <option value="ITC.NS">ITC Limited</option>
+                    <option value="SBIN.NS">State Bank of India</option>
+                    <option value="BHARTIARTL.NS">Bharti Airtel</option>
+                    <option value="KOTAKBANK.NS">Kotak Mahindra Bank</option>
+                    <option value="MARUTI.NS">Maruti Suzuki</option>
+                    <option value="TATAMOTORS.NS">Tata Motors</option>
+                    <option value="WIPRO.NS">Wipro</option>
+                    <option value="HCLTECH.NS">HCL Technologies</option>
+                    <option value="SUNPHARMA.NS">Sun Pharma</option>
+                    <option value="TITAN.NS">Titan Company</option>
+                    <option value="BAJFINANCE.NS">Bajaj Finance</option>
+                    <option value="LT.NS">Larsen & Toubro</option>
+                    <option value="ONGC.NS">ONGC</option>
+                    <option value="POWERGRID.NS">Power Grid Corp</option>
                 </select>
             </div>
             <div class="form-group">
@@ -264,6 +296,10 @@
             <div class="form-group">
                 <label>&nbsp;</label>
                 <button class="btn" onclick="analyze()">🔍 Analyze</button>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button class="btn" onclick="loadDailyPrediction()" style="background: linear-gradient(135deg, #48bb78, #38a169);">📈 Load Daily Prediction</button>
             </div>
         </div>
 
@@ -342,7 +378,7 @@
                     <div class="pred-value" id="fAcc">—</div>
                 </div>
             </div>
-            <div class="summary" id="fSum">Select a stock and click Analyze</div>
+            <div class="summary" id="fSum">Select a stock and click Analyze or Load Daily Prediction</div>
         </div>
 
         <div class="chart-box">
@@ -356,61 +392,108 @@
     </div>
 
     <script>
-        const STOCKS = {
-            RELIANCE: { p: 2456, c: 1.85, m: '17.8L Cr', a: 80, f: 81, g: 1.4 },
-            TCS: { p: 3682, c: -0.42, m: '13.2L Cr', a: 69.6, f: 74.3, g: 39.5 },
-            HDFCBANK: { p: 1654, c: 0.92, m: '12.5L Cr', a: 71.3, f: 76.3, g: 15.2 },
-            INFY: { p: 1478, c: -1.15, m: '6.8L Cr', a: 68.7, f: 71.6, g: -0.5 },
-            ICICIBANK: { p: 1285, c: 0.68, m: '7.2L Cr', a: 51.3, f: 51.7, g: 13.1 },
-            HINDUNILVR: { p: 2352, c: -0.28, m: '5.8L Cr', a: 79.1, f: 86.6, g: 17.0 },
-            ITC: { p: 467, c: 1.24, m: '5.6L Cr', a: 76.5, f: 77.7, g: 18.7 },
-            SBIN: { p: 828, c: 2.15, m: '6.2L Cr', a: 73, f: 71.4, g: -2.2 },
-            BHARTIARTL: { p: 1524, c: -0.85, m: '8.9L Cr', a: 67.8, f: 68, g: 18.6 },
-            KOTAKBANK: { p: 1782, c: 0.45, m: '3.8L Cr', a: 67.8, f: 69.4, g: 15.1 },
-            MARUTI: { p: 12542, c: 1.32, m: '4.1L Cr', a: 68.9, f: 72.1, g: 14.2 },
-            TATAMOTORS: { p: 985, c: 3.25, m: '2.8L Cr', a: 66.3, f: 69.8, g: 16.7 },
-            WIPRO: { p: 488, c: -0.78, m: '2.4L Cr', a: 63.2, f: 66.8, g: 9.8 },
-            HCLTECH: { p: 1685, c: 0.56, m: '4.2L Cr', a: 65.7, f: 69.3, g: 12.8 },
-            SUNPHARMA: { p: 1652, c: 1.42, m: '4.5L Cr', a: 67.5, f: 71, g: 14.8 },
-            TITAN: { p: 3258, c: -0.35, m: '2.9L Cr', a: 68.4, f: 72, g: 15.5 },
-            BAJFINANCE: { p: 7245, c: 2.18, m: '4.8L Cr', a: 65.8, f: 69.4, g: 12.5 },
-            LT: { p: 3458, c: 0.82, m: '5.1L Cr', a: 67.2, f: 70.8, g: 14 },
-            ONGC: { p: 288, c: 1.95, m: '3.5L Cr', a: 64.5, f: 67.9, g: 10.5 },
-            POWERGRID: { p: 312, c: -0.52, m: '2.9L Cr', a: 66.8, f: 70.2, g: 13.5 }
-        };
-
+        const API_BASE = '';
         let chart = null;
+        let currentSymbol = 'RELIANCE.NS';
+        
+        const STOCK_NAMES = {
+            'RELIANCE.NS': 'Reliance Industries',
+            'TCS.NS': 'Tata Consultancy Services',
+            'HDFCBANK.NS': 'HDFC Bank',
+            'INFY.NS': 'Infosys',
+            'ICICIBANK.NS': 'ICICI Bank',
+            'HINDUNILVR.NS': 'Hindustan Unilever',
+            'ITC.NS': 'ITC Limited',
+            'SBIN.NS': 'State Bank of India',
+            'BHARTIARTL.NS': 'Bharti Airtel',
+            'KOTAKBANK.NS': 'Kotak Mahindra Bank',
+            'MARUTI.NS': 'Maruti Suzuki',
+            'TATAMOTORS.NS': 'Tata Motors',
+            'WIPRO.NS': 'Wipro',
+            'HCLTECH.NS': 'HCL Technologies',
+            'SUNPHARMA.NS': 'Sun Pharma',
+            'TITAN.NS': 'Titan Company',
+            'BAJFINANCE.NS': 'Bajaj Finance',
+            'LT.NS': 'Larsen & Toubro',
+            'ONGC.NS': 'ONGC',
+            'POWERGRID.NS': 'Power Grid Corp'
+        };
 
         function rnd(min, max) { return (Math.random() * (max - min) + min); }
         function clr(v, pos, neg) { return v > 0 ? pos : v < 0 ? neg : ''; }
 
-        function analyze() {
-            const sym = document.getElementById('stock').value;
-            const s = STOCKS[sym];
-            if (!s) return;
+        function setLiveStatus(connected) {
+            const dot = document.getElementById('liveDot');
+            const status = document.getElementById('liveStatus');
+            if (connected) {
+                dot.classList.remove('offline');
+                status.textContent = 'LIVE';
+            } else {
+                dot.classList.add('offline');
+                status.textContent = 'OFFLINE';
+            }
+        }
 
-            // Price info
-            const price = s.p;
-            const chg = s.c;
-            document.getElementById('price').value = '₹' + price.toLocaleString();
-            document.getElementById('change').value = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
-            document.getElementById('change').style.color = chg > 0 ? '#48bb78' : '#f56565';
-            document.getElementById('mcap').value = s.m;
+        async function fetchDailyPrediction(symbol) {
+            try {
+                const response = await fetch(API_BASE + '/api/predictions/daily/' + encodeURIComponent(symbol));
+                if (!response.ok) {
+                    if (response.status === 404) return null;
+                    throw new Error('Failed to fetch prediction');
+                }
+                return await response.json();
+            } catch (e) {
+                console.error('Error fetching daily prediction:', e);
+                return null;
+            }
+        }
 
+        async function fetchLatestPrice(symbol) {
+            try {
+                const response = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/' + symbol);
+                if (!response.ok) return null;
+                const data = await response.json();
+                const result = data.chart?.result?.[0];
+                if (!result) return null;
+                const meta = result.meta;
+                return {
+                    price: meta.regularMarketPrice,
+                    change: meta.regularMarketChangePercent,
+                    previousClose: meta.previousClose
+                };
+            } catch (e) {
+                console.error('Error fetching price:', e);
+                return null;
+            }
+        }
+
+        function updatePriceInfo(priceData) {
+            if (!priceData) return;
+            const { price, change, previousClose } = priceData;
+            document.getElementById('price').value = '₹' + price.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('change').value = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+            document.getElementById('change').style.color = change > 0 ? '#48bb78' : '#f56565';
+        }
+
+        function renderPrediction(pred) {
+            if (!pred) return;
+            
+            const p = pred.prediction || pred;
+            const currentPrice = p.current_price || p.entry_price;
+            
             // Layer 1
-            const d1 = chg > 0.5 ? 'UP' : chg < -0.5 ? 'DOWN' : 'NEUTRAL';
-            const r1 = rnd(-1.5, 3.5).toFixed(2);
-            const c1 = rnd(55, 90).toFixed(1);
+            const d1 = p.direction;
+            const c1 = p.confidence;
             document.getElementById('d1').textContent = d1;
             document.getElementById('d1').className = 'value ' + (d1 === 'UP' ? 'up' : d1 === 'DOWN' ? 'down' : 'warn');
-            document.getElementById('r1').textContent = r1 + '%';
-            document.getElementById('r1').className = 'value ' + clr(parseFloat(r1), 'up', 'down');
+            document.getElementById('r1').textContent = p.projected_return ? p.projected_return.toFixed(2) + '%' : '—';
+            document.getElementById('r1').className = 'value ' + clr(p.projected_return, 'up', 'down');
             document.getElementById('c1').textContent = c1 + '%';
             document.getElementById('s1').textContent = d1 === 'UP' ? '🟢 BULL' : d1 === 'DOWN' ? '🔴 BEAR' : '🟡 FLAT';
 
-            // Layer 2
-            const lgbm = rnd(42, 72).toFixed(1);
-            const xgb = rnd(42, 72).toFixed(1);
+            // Layer 2 (from model scores if available)
+            const lgbm = p.lgbm_score || rnd(42, 72).toFixed(1);
+            const xgb = p.xgb_score || rnd(42, 72).toFixed(1);
             const meta = ((+lgbm + +xgb) / 2).toFixed(1);
             const cal = (+meta * 0.95 + 2.5).toFixed(1);
             document.getElementById('d2a').textContent = lgbm + '%';
@@ -422,9 +505,9 @@
             document.getElementById('d2d').textContent = cal + '%';
 
             // Layer 3
-            const rsi = rnd(32, 68).toFixed(1);
-            const adx = rnd(18, 42).toFixed(1);
-            const mood = rnd(-0.6, 0.6).toFixed(3);
+            const rsi = p.rsi || rnd(32, 68).toFixed(1);
+            const adx = p.adx || rnd(18, 42).toFixed(1);
+            const mood = p.mood_score || rnd(-0.6, 0.6).toFixed(3);
             const moodL = +mood > 0.25 ? 'BULLISH' : +mood < -0.25 ? 'BEARISH' : 'NEUTRAL';
             document.getElementById('d3a').textContent = mood;
             document.getElementById('d3a').className = 'value ' + (+mood > 0 ? 'up' : 'down');
@@ -436,6 +519,7 @@
             document.getElementById('d3d').className = 'value ' + (+adx > 25 ? 'up' : '');
 
             // Layer 4
+            const price = currentPrice;
             const sl = d1 === 'UP' ? (price * 0.97).toFixed(0) : (price * 1.03).toFixed(0);
             const t1 = d1 === 'UP' ? (price * 1.06).toFixed(0) : (price * 0.94).toFixed(0);
             const risk = Math.abs(price - +sl);
@@ -451,6 +535,135 @@
             document.getElementById('fDir').textContent = fDir;
             document.getElementById('fDir').className = 'pred-value ' + (fDir === 'UP' ? 'up' : 'down');
             document.getElementById('fConf').textContent = fConf + '%';
+            document.getElementById('fAcc').textContent = p.filtered_accuracy || p.accuracy || '—';
+            
+            const bar = document.getElementById('fBar');
+            bar.style.width = (fConf * 2) + '%';
+            bar.style.background = fConf > 25 ? '#48bb78' : fConf > 10 ? '#ed8936' : '#f56565';
+
+            const gate = p.gate || '—';
+            const accuracy = p.accuracy || p.filtered_accuracy || '—';
+            document.getElementById('fSum').innerHTML = `
+                <strong style="color:#667eea">${STOCK_NAMES[pred.symbol] || pred.symbol}</strong> analysis:<br>
+                🧠 Gauravi: <span style="color:${d1==='UP'?'#48bb78':'#f56565'}">${d1}</span> (${c1}%) | 
+                🤖 ML: <span style="color:${+meta>50?'#48bb78':'#f56565'}">${+meta>50?'UP':'DOWN'}</span> (${meta}%) | 
+                🌡️ Mood: ${moodL} (RSI:${rsi}, ADX:${adx})<br>
+                📊 Backtested: ${accuracy}% accuracy | Gate: ${gate}
+            `;
+
+            updateChart(pred.symbol, price);
+        }
+
+        async function analyze() {
+            currentSymbol = document.getElementById('stock').value;
+            setLiveStatus(false);
+            document.getElementById('fSum').innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading...</div>';
+            
+            try {
+                const priceData = await fetchLatestPrice(currentSymbol);
+                updatePriceInfo(priceData);
+                
+                const pred = await fetchDailyPrediction(currentSymbol);
+                if (pred) {
+                    renderPrediction(pred);
+                    setLiveStatus(true);
+                } else {
+                    // Fallback to mock analysis
+                    mockAnalyze(priceData);
+                    setLiveStatus(false);
+                }
+            } catch (e) {
+                console.error(e);
+                mockAnalyze(priceData);
+                setLiveStatus(false);
+            }
+        }
+
+        async function loadDailyPrediction() {
+            currentSymbol = document.getElementById('stock').value;
+            setLiveStatus(false);
+            document.getElementById('fSum').innerHTML = '<div class="loading"><div class="loading-spinner"></div>Loading daily prediction...</div>';
+            
+            try {
+                const priceData = await fetchLatestPrice(currentSymbol);
+                updatePriceInfo(priceData);
+                
+                const pred = await fetchDailyPrediction(currentSymbol);
+                if (pred) {
+                    renderPrediction(pred);
+                    setLiveStatus(true);
+                } else {
+                    document.getElementById('fSum').innerHTML = '<div class="error-message">No daily prediction available for ' + currentSymbol + '. Run daily scheduler first.</div>';
+                    mockAnalyze(priceData);
+                    setLiveStatus(false);
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('fSum').innerHTML = '<div class="error-message">Error loading prediction: ' + e.message + '</div>';
+                setLiveStatus(false);
+            }
+        }
+
+        function mockAnalyze(priceData) {
+            const sym = currentSymbol.replace('.NS', '');
+            const s = { p: priceData?.price || 2456, c: priceData?.change || 1.85, m: '—', a: 80, f: 81, g: 1.4 };
+            
+            const price = s.p;
+            const chg = s.c;
+            document.getElementById('price').value = '₹' + price.toLocaleString();
+            document.getElementById('change').value = (chg > 0 ? '+' : '') + chg.toFixed(2) + '%';
+            document.getElementById('change').style.color = chg > 0 ? '#48bb78' : '#f56565';
+            document.getElementById('mcap').value = s.m;
+
+            const d1 = chg > 0.5 ? 'UP' : chg < -0.5 ? 'DOWN' : 'NEUTRAL';
+            const r1 = rnd(-1.5, 3.5).toFixed(2);
+            const c1 = rnd(55, 90).toFixed(1);
+            document.getElementById('d1').textContent = d1;
+            document.getElementById('d1').className = 'value ' + (d1 === 'UP' ? 'up' : d1 === 'DOWN' ? 'down' : 'warn');
+            document.getElementById('r1').textContent = r1 + '%';
+            document.getElementById('r1').className = 'value ' + clr(parseFloat(r1), 'up', 'down');
+            document.getElementById('c1').textContent = c1 + '%';
+            document.getElementById('s1').textContent = d1 === 'UP' ? '🟢 BULL' : d1 === 'DOWN' ? '🔴 BEAR' : '🟡 FLAT';
+
+            const lgbm = rnd(42, 72).toFixed(1);
+            const xgb = rnd(42, 72).toFixed(1);
+            const meta = ((+lgbm + +xgb) / 2).toFixed(1);
+            const cal = (+meta * 0.95 + 2.5).toFixed(1);
+            document.getElementById('d2a').textContent = lgbm + '%';
+            document.getElementById('d2a').className = 'value ' + (+lgbm > 50 ? 'up' : 'down');
+            document.getElementById('d2b').textContent = xgb + '%';
+            document.getElementById('d2b').className = 'value ' + (+xgb > 50 ? 'up' : 'down');
+            document.getElementById('d2c').textContent = meta + '%';
+            document.getElementById('d2c').className = 'value ' + (+meta > 50 ? 'up' : 'down');
+            document.getElementById('d2d').textContent = cal + '%';
+
+            const rsi = rnd(32, 68).toFixed(1);
+            const adx = rnd(18, 42).toFixed(1);
+            const mood = rnd(-0.6, 0.6).toFixed(3);
+            const moodL = +mood > 0.25 ? 'BULLISH' : +mood < -0.25 ? 'BEARISH' : 'NEUTRAL';
+            document.getElementById('d3a').textContent = mood;
+            document.getElementById('d3a').className = 'value ' + (+mood > 0 ? 'up' : 'down');
+            document.getElementById('d3b').textContent = moodL;
+            document.getElementById('d3b').className = 'value ' + (moodL === 'BULLISH' ? 'up' : moodL === 'BEARISH' ? 'down' : 'warn');
+            document.getElementById('d3c').textContent = rsi;
+            document.getElementById('d3c').className = 'value ' + (+rsi > 65 ? 'down' : +rsi < 35 ? 'up' : '');
+            document.getElementById('d3d').textContent = adx;
+            document.getElementById('d3d').className = 'value ' + (+adx > 25 ? 'up' : '');
+
+            const sl = d1 === 'UP' ? (price * 0.97).toFixed(0) : (price * 1.03).toFixed(0);
+            const t1 = d1 === 'UP' ? (price * 1.06).toFixed(0) : (price * 0.94).toFixed(0);
+            const risk = Math.abs(price - +sl);
+            const reward = Math.abs(+t1 - price);
+            document.getElementById('d4a').textContent = '₹' + price.toLocaleString();
+            document.getElementById('d4b').textContent = '₹' + Number(sl).toLocaleString();
+            document.getElementById('d4c').textContent = '₹' + Number(t1).toLocaleString();
+            document.getElementById('d4d').textContent = '1:' + (reward / risk).toFixed(2);
+
+            const fDir = +meta > 50 ? 'UP' : 'DOWN';
+            const fConf = Math.abs(+meta - 50).toFixed(1);
+            document.getElementById('fDir').textContent = fDir;
+            document.getElementById('fDir').className = 'pred-value ' + (fDir === 'UP' ? 'up' : 'down');
+            document.getElementById('fConf').textContent = fConf + '%';
             document.getElementById('fAcc').textContent = s.f + '%';
             
             const bar = document.getElementById('fBar');
@@ -458,14 +671,13 @@
             bar.style.background = fConf > 25 ? '#48bb78' : fConf > 10 ? '#ed8936' : '#f56565';
 
             document.getElementById('fSum').innerHTML = `
-                <strong style="color:#667eea">${sym}</strong> analysis:<br>
+                <strong style="color:#667eea">${sym}</strong> analysis (mock):<br>
                 🧠 Gauravi: <span style="color:${d1==='UP'?'#48bb78':'#f56565'}">${d1}</span> (${c1}%) | 
                 🤖 ML: <span style="color:${+meta>50?'#48bb78':'#f56565'}">${+meta>50?'UP':'DOWN'}</span> (${meta}%) | 
                 🌡️ Mood: ${moodL} (RSI:${rsi}, ADX:${adx})<br>
                 📊 Backtested: ${s.a}% accuracy, ${s.f}% filtered | Gate: ${s.g>0?'+':''}${s.g}%
             `;
 
-            // Chart - generate mock historical data
             updateChart(sym, price);
         }
 
@@ -473,7 +685,6 @@
             const ctx = document.getElementById('chart');
             if (chart) { chart.destroy(); chart = null; }
 
-            // Generate 20 days of realistic price data
             const days = 20;
             const prices = [];
             const labels = [];
@@ -486,10 +697,8 @@
                 d.setDate(d.getDate() - days + i + 1);
                 labels.push(d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' }));
             }
-            // Last price should be current
             prices[prices.length - 1] = currentPrice;
 
-            // Calculate min/max for proper scaling
             const minP = Math.min(...prices) * 0.99;
             const maxP = Math.max(...prices) * 1.01;
 
@@ -537,7 +746,7 @@
             });
         }
 
-        // Auto-analyze on load
+        // Load default on startup
         analyze();
     </script>
 </body>

@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indian Stock Market AI Advisor | Top 5 Performers</title>
+    <title>Indian Stock Market AI Advisor | Top & Worst 5 Performers</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +14,7 @@
             --accent-green: #10b981;
             --accent-green-glow: rgba(16, 185, 129, 0.25);
             --accent-red: #f43f5e;
+            --accent-red-glow: rgba(244, 63, 94, 0.25);
             --accent-amber: #f59e0b;
             --accent-blue: #3b82f6;
             --text-primary: #f8fafc;
@@ -89,6 +89,35 @@
             height: 8px;
             background-color: var(--accent-green);
             border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .btn-refresh {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-refresh:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-refresh:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         /* SUMMARY STATS BAR */
@@ -127,7 +156,7 @@
         .stat-value.bearish { color: var(--accent-red); }
         .stat-value.amber { color: var(--accent-amber); }
 
-        /* TOP 5 PERFORMERS SECTION */
+        /* PERFORMERS SECTIONS */
         .section-header {
             display: flex;
             align-items: center;
@@ -143,14 +172,14 @@
             gap: 0.6rem;
         }
 
-        .top-performers-grid {
+        .performers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
             gap: 1.25rem;
             margin-bottom: 3rem;
         }
 
-        .top-card {
+        .performer-card {
             background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
             border: 1px solid var(--border-color);
             border-radius: 14px;
@@ -160,10 +189,20 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
-        .top-card:hover {
+        .performer-card:hover {
             transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px var(--glow-color);
+        }
+
+        .performer-card.top { --glow-color: var(--accent-green-glow); }
+        .performer-card.worst { --glow-color: var(--accent-red-glow); }
+
+        .performer-card.top:hover {
             border-color: rgba(16, 185, 129, 0.4);
-            box-shadow: 0 15px 30px -10px var(--accent-green-glow);
+        }
+
+        .performer-card.worst:hover {
+            border-color: rgba(244, 63, 94, 0.4);
         }
 
         .rank-medal {
@@ -182,13 +221,13 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .top-card-ticker {
+        .performer-ticker {
             font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-primary);
         }
 
-        .top-card-name {
+        .performer-name {
             font-size: 0.8rem;
             color: var(--text-muted);
             margin-bottom: 1rem;
@@ -197,7 +236,7 @@
             text-overflow: ellipsis;
         }
 
-        .top-metric-row {
+        .metric-row {
             display: flex;
             justify-content: space-between;
             padding: 0.35rem 0;
@@ -205,26 +244,36 @@
             font-size: 0.85rem;
         }
 
-        .top-metric-label {
+        .metric-label {
             color: var(--text-secondary);
         }
 
-        .top-metric-val {
+        .metric-val {
             font-weight: 600;
         }
 
         .score-pill {
             display: inline-block;
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-green);
             padding: 0.3rem 0.6rem;
             border-radius: 6px;
             font-weight: 700;
             font-size: 0.85rem;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid;
             margin-top: 0.8rem;
             text-align: center;
             width: 100%;
+        }
+
+        .score-pill.top {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .score-pill.worst {
+            background: rgba(244, 63, 94, 0.15);
+            color: var(--accent-red);
+            border-color: rgba(244, 63, 94, 0.3);
         }
 
         /* TABLE SECTION */
@@ -344,6 +393,41 @@
         .positive { color: var(--accent-green); font-weight: 600; }
         .negative { color: var(--accent-red); font-weight: 600; }
 
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-green);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .last-updated {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
         footer {
             margin-top: 3rem;
             text-align: center;
@@ -351,6 +435,14 @@
             color: var(--text-muted);
             border-top: 1px solid var(--border-color);
             padding-top: 1.5rem;
+        }
+
+        .signal-cell {
+            white-space: nowrap;
+        }
+
+        .score-cell {
+            white-space: nowrap;
         }
     </style>
 </head>
@@ -362,35 +454,39 @@
                 <h1>Indian Market <span>AI Advisor</span></h1>
                 <p>Advanced Quantitative Screening, Performance Scoring & Trend Analytics</p>
             </div>
-            <div class="badge-live">
-                <span class="dot-live"></span>
-                Analysis Time: 22 Aug 2026, 12:02:49 IST
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div class="badge-live">
+                    <span class="dot-live"></span>
+                    <span id="liveStatus">Connecting...</span>
+                </div>
+                <button class="btn-refresh" id="refreshBtn" onclick="loadData()">
+                    <span class="refresh-icon">⟳</span>
+                    <span>Refresh</span>
+                </button>
             </div>
         </header>
 
         <!-- STATS OVERVIEW -->
-        <section class="stats-grid">
+        <section class="stats-grid" id="statsGrid">
             <div class="stat-card">
                 <span class="stat-label">Total Analyzed</span>
-                <span class="stat-value">51 Stocks</span>
+                <span class="stat-value" id="statTotal">—</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Bullish Momentum</span>
-                <span class="stat-value bullish">14</span>
+                <span class="stat-value bullish" id="statBullish">—</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Bearish / Caution</span>
-                <span class="stat-value bearish">34</span>
+                <span class="stat-value bearish" id="statBearish">—</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Market Avg 1M Return</span>
-                <span class="stat-value bullish">
-                    +1.28%
-                </span>
+                <span class="stat-value" id="statAvgReturn">—</span>
             </div>
             <div class="stat-card">
                 <span class="stat-label">Avg Health Score</span>
-                <span class="stat-value amber">47.1/100</span>
+                <span class="stat-value amber" id="statAvgScore">—</span>
             </div>
         </section>
 
@@ -398,180 +494,32 @@
         <div class="section-header">
             <h2 class="section-title">🏆 Top 5 Performing Stocks</h2>
         </div>
-        <div class="top-performers-grid">
-            
-            <div class="top-card">
-                <span class="rank-medal">
-                    🥇
-                </span>
-                <div class="top-card-ticker">GRASIM.NS</div>
-                <div class="top-card-name" title="Grasim Industries Ltd">Grasim Industries Ltd</div>
-
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Close Price</span>
-                    <span class="top-metric-val">₹3308.0</span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">1-Month Return</span>
-                    <span class="top-metric-val positive">
-                        +6.26%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Period Return</span>
-                    <span class="top-metric-val positive">
-                        +15.12%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">RSI (14)</span>
-                    <span class="top-metric-val">59.29</span>
-                </div>
-                
-                <div class="score-pill">
-                    Score: 97.0/100 • STRONG BUY (Top Performer)
-                </div>
+        <div class="performers-grid" id="topPerformersGrid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                Loading top performers...
             </div>
-            
-            <div class="top-card">
-                <span class="rank-medal">
-                    🥈
-                </span>
-                <div class="top-card-ticker">KOTAKBANK.NS</div>
-                <div class="top-card-name" title="Kotak Mahindra Bank Ltd">Kotak Mahindra Bank Ltd</div>
+        </div>
 
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Close Price</span>
-                    <span class="top-metric-val">₹402.8</span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">1-Month Return</span>
-                    <span class="top-metric-val positive">
-                        +5.07%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Period Return</span>
-                    <span class="top-metric-val negative">
-                        -6.48%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">RSI (14)</span>
-                    <span class="top-metric-val">62.12</span>
-                </div>
-                
-                <div class="score-pill">
-                    Score: 87.0/100 • STRONG BUY (Top Performer)
-                </div>
+        <!-- WORST 5 PERFORMING STOCKS -->
+        <div class="section-header">
+            <h2 class="section-title" style="color: var(--accent-red);">📉 Worst 5 Performing Stocks</h2>
+        </div>
+        <div class="performers-grid" id="worstPerformersGrid">
+            <div class="loading">
+                <div class="loading-spinner" style="border-top-color: var(--accent-red);"></div>
+                Loading worst performers...
             </div>
-            
-            <div class="top-card">
-                <span class="rank-medal">
-                    🥉
-                </span>
-                <div class="top-card-ticker">HINDALCO.NS</div>
-                <div class="top-card-name" title="Hindalco Industries Ltd">Hindalco Industries Ltd</div>
-
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Close Price</span>
-                    <span class="top-metric-val">₹1029.85</span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">1-Month Return</span>
-                    <span class="top-metric-val positive">
-                        +8.41%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Period Return</span>
-                    <span class="top-metric-val positive">
-                        +12.4%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">RSI (14)</span>
-                    <span class="top-metric-val">54.02</span>
-                </div>
-                
-                <div class="score-pill">
-                    Score: 84.0/100 • STRONG BUY (Top Performer)
-                </div>
-            </div>
-            
-            <div class="top-card">
-                <span class="rank-medal">
-                    #4
-                </span>
-                <div class="top-card-ticker">SHRIRAMFIN.NS</div>
-                <div class="top-card-name" title="Shriram Finance Ltd">Shriram Finance Ltd</div>
-
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Close Price</span>
-                    <span class="top-metric-val">₹1130.0</span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">1-Month Return</span>
-                    <span class="top-metric-val positive">
-                        +10.16%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Period Return</span>
-                    <span class="top-metric-val positive">
-                        +6.13%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">RSI (14)</span>
-                    <span class="top-metric-val">60.85</span>
-                </div>
-                
-                <div class="score-pill">
-                    Score: 82.0/100 • STRONG BUY (Top Performer)
-                </div>
-            </div>
-            
-            <div class="top-card">
-                <span class="rank-medal">
-                    #5
-                </span>
-                <div class="top-card-ticker">DIVISLAB.NS</div>
-                <div class="top-card-name" title="Divi's Laboratories Ltd">Divi's Laboratories Ltd</div>
-
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Close Price</span>
-                    <span class="top-metric-val">₹8597.0</span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">1-Month Return</span>
-                    <span class="top-metric-val positive">
-                        +17.69%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">Period Return</span>
-                    <span class="top-metric-val positive">
-                        +36.6%
-                    </span>
-                </div>
-                <div class="top-metric-row">
-                    <span class="top-metric-label">RSI (14)</span>
-                    <span class="top-metric-val">73.41</span>
-                </div>
-                
-                <div class="score-pill">
-                    Score: 80.0/100 • STRONG BUY (Top Performer)
-                </div>
-            </div>
-            
         </div>
 
         <!-- FULL MARKET SCREENER TABLE -->
         <div class="table-container">
             <div class="table-toolbar">
                 <span class="table-title">Full Market Screener & Indicator Analysis</span>
-                <input type="text" id="searchInput" class="search-input" placeholder="Filter by ticker or name..." onkeyup="filterTable()">
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Filter by ticker or name..." onkeyup="filterTable()">
+                    <span class="last-updated" id="lastUpdated"></span>
+                </div>
             </div>
             <table id="screenerTable">
                 <thead>
@@ -588,1924 +536,243 @@
                         <th>Quant Score</th>
                     </tr>
                 </thead>
-                <tbody>
-                    
-                    
+                <tbody id="screenerBody">
                     <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BSE.NS</span>
-                                <span class="stock-desc">BSE Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹3241.0</strong></td>
-                        <td class="negative">
-                            -5.98%
-                        </td>
-                        <td class="negative">
-                            -9.44%
-                        </td>
-                        <td class="positive">
-                            +18.92%
-                        </td>
-                        <td>31.76</td>
-                        <td>₹3476.71</td>
-                        <td>₹3686.32</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>28.3</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 28.3%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
+                        <td colspan="10" class="loading">
+                            <div class="loading-spinner"></div>
+                            Loading market data...
                         </td>
                     </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">^NSEI</span>
-                                <span class="stock-desc">NIFTY 50 Index</span>
-                            </div>
-                        </td>
-                        <td><strong>₹24252.0</strong></td>
-                        <td class="negative">
-                            -0.47%
-                        </td>
-                        <td class="positive">
-                            +1.6%
-                        </td>
-                        <td class="negative">
-                            -5.68%
-                        </td>
-                        <td>49.07</td>
-                        <td>₹24370.54</td>
-                        <td>₹24182.03</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ADANIENT.NS</span>
-                                <span class="stock-desc">Adani Enterprises Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2994.9</strong></td>
-                        <td class="positive">
-                            +1.01%
-                        </td>
-                        <td class="negative">
-                            -4.85%
-                        </td>
-                        <td class="positive">
-                            +36.69%
-                        </td>
-                        <td>45.14</td>
-                        <td>₹3017.43</td>
-                        <td>₹3056.29</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>30.6</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 30.6%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ADANIPORTS.NS</span>
-                                <span class="stock-desc">Adani Ports and Special Economic Zone Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1700.0</strong></td>
-                        <td class="positive">
-                            +0.0%
-                        </td>
-                        <td class="negative">
-                            -4.41%
-                        </td>
-                        <td class="positive">
-                            +9.27%
-                        </td>
-                        <td>44.48</td>
-                        <td>₹1697.25</td>
-                        <td>₹1771.73</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>44.8</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 44.8%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">APOLLOHOSP.NS</span>
-                                <span class="stock-desc">Apollo Hospitals Enterprise Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹8693.0</strong></td>
-                        <td class="negative">
-                            -2.55%
-                        </td>
-                        <td class="negative">
-                            -1.91%
-                        </td>
-                        <td class="positive">
-                            +13.0%
-                        </td>
-                        <td>44.83</td>
-                        <td>₹8846.33</td>
-                        <td>₹8766.13</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>42.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 42.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ASIANPAINT.NS</span>
-                                <span class="stock-desc">Asian Paints Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2640.0</strong></td>
-                        <td class="negative">
-                            -2.09%
-                        </td>
-                        <td class="negative">
-                            -1.08%
-                        </td>
-                        <td class="positive">
-                            +8.66%
-                        </td>
-                        <td>39.45</td>
-                        <td>₹2721.12</td>
-                        <td>₹2702.68</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>37.5</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 37.5%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">AXISBANK.NS</span>
-                                <span class="stock-desc">Axis Bank Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1245.8</strong></td>
-                        <td class="positive">
-                            +2.33%
-                        </td>
-                        <td class="positive">
-                            +1.86%
-                        </td>
-                        <td class="negative">
-                            -10.16%
-                        </td>
-                        <td>47.61</td>
-                        <td>₹1238.75</td>
-                        <td>₹1292.29</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>40.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 40.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BAJAJ-AUTO.NS</span>
-                                <span class="stock-desc">Bajaj Auto Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹11700.0</strong></td>
-                        <td class="positive">
-                            +0.0%
-                        </td>
-                        <td class="positive">
-                            +3.69%
-                        </td>
-                        <td class="positive">
-                            +18.12%
-                        </td>
-                        <td>62.83</td>
-                        <td>₹11612.45</td>
-                        <td>₹10748.04</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>78.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 78.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BAJAJFINSV.NS</span>
-                                <span class="stock-desc">Bajaj Finserv Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2032.5</strong></td>
-                        <td class="positive">
-                            +1.2%
-                        </td>
-                        <td class="positive">
-                            +7.57%
-                        </td>
-                        <td class="negative">
-                            -0.93%
-                        </td>
-                        <td>61.16</td>
-                        <td>₹2013.48</td>
-                        <td>₹1904.08</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>72.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 72.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BAJFINANCE.NS</span>
-                                <span class="stock-desc">Bajaj Finance Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1095.0</strong></td>
-                        <td class="positive">
-                            +0.74%
-                        </td>
-                        <td class="positive">
-                            +5.31%
-                        </td>
-                        <td class="positive">
-                            +6.21%
-                        </td>
-                        <td>55.04</td>
-                        <td>₹1097.54</td>
-                        <td>₹1043.25</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>67.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 67.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BEL.NS</span>
-                                <span class="stock-desc">Bharat Electronics Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹414.0</strong></td>
-                        <td class="positive">
-                            +0.78%
-                        </td>
-                        <td class="positive">
-                            +2.13%
-                        </td>
-                        <td class="negative">
-                            -5.86%
-                        </td>
-                        <td>60.47</td>
-                        <td>₹401.23</td>
-                        <td>₹408.52</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>65.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 65.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">BHARTIARTL.NS</span>
-                                <span class="stock-desc">Bharti Airtel Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1946.0</strong></td>
-                        <td class="negative">
-                            -2.31%
-                        </td>
-                        <td class="positive">
-                            +0.78%
-                        </td>
-                        <td class="negative">
-                            -2.57%
-                        </td>
-                        <td>51.67</td>
-                        <td>₹1948.01</td>
-                        <td>₹1918.14</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                NEUTRAL / ACCUMULATE
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>56.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 56.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">CIPLA.NS</span>
-                                <span class="stock-desc">Cipla Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1432.2</strong></td>
-                        <td class="negative">
-                            -1.23%
-                        </td>
-                        <td class="positive">
-                            +2.81%
-                        </td>
-                        <td class="positive">
-                            +7.97%
-                        </td>
-                        <td>45.82</td>
-                        <td>₹1452.96</td>
-                        <td>₹1436.19</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>43.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 43.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">COALINDIA.NS</span>
-                                <span class="stock-desc">Coal India Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹405.2</strong></td>
-                        <td class="negative">
-                            -0.47%
-                        </td>
-                        <td class="negative">
-                            -5.12%
-                        </td>
-                        <td class="negative">
-                            -4.88%
-                        </td>
-                        <td>35.92</td>
-                        <td>₹411.63</td>
-                        <td>₹426.5</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>20.4</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 20.4%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">DRREDDY.NS</span>
-                                <span class="stock-desc">Dr. Reddy's Laboratories Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1174.7</strong></td>
-                        <td class="negative">
-                            -2.11%
-                        </td>
-                        <td class="positive">
-                            +0.72%
-                        </td>
-                        <td class="negative">
-                            -10.15%
-                        </td>
-                        <td>42.96</td>
-                        <td>₹1172.93</td>
-                        <td>₹1237.97</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>40.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 40.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">EICHERMOT.NS</span>
-                                <span class="stock-desc">Eicher Motors Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹8042.0</strong></td>
-                        <td class="negative">
-                            -0.72%
-                        </td>
-                        <td class="positive">
-                            +5.37%
-                        </td>
-                        <td class="positive">
-                            +0.04%
-                        </td>
-                        <td>61.11</td>
-                        <td>₹7950.45</td>
-                        <td>₹7663.24</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>76.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 76.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">DIVISLAB.NS</span>
-                                <span class="stock-desc">Divi's Laboratories Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹8597.0</strong></td>
-                        <td class="positive">
-                            +1.42%
-                        </td>
-                        <td class="positive">
-                            +17.69%
-                        </td>
-                        <td class="positive">
-                            +36.6%
-                        </td>
-                        <td>73.41</td>
-                        <td>₹8287.08</td>
-                        <td>₹7453.14</td>
-                        <td>
-                            <span class="badge-sig sig-strong-buy">
-                                STRONG BUY (Top Performer)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>80.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 80.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">GRASIM.NS</span>
-                                <span class="stock-desc">Grasim Industries Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹3308.0</strong></td>
-                        <td class="positive">
-                            +1.83%
-                        </td>
-                        <td class="positive">
-                            +6.26%
-                        </td>
-                        <td class="positive">
-                            +15.12%
-                        </td>
-                        <td>59.29</td>
-                        <td>₹3231.78</td>
-                        <td>₹3178.39</td>
-                        <td>
-                            <span class="badge-sig sig-strong-buy">
-                                STRONG BUY (Top Performer)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>97.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 97.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">HCLTECH.NS</span>
-                                <span class="stock-desc">HCL Technologies Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1302.5</strong></td>
-                        <td class="negative">
-                            -4.23%
-                        </td>
-                        <td class="positive">
-                            +4.64%
-                        </td>
-                        <td class="negative">
-                            -8.67%
-                        </td>
-                        <td>49.94</td>
-                        <td>₹1341.68</td>
-                        <td>₹1229.53</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">HDFCBANK.NS</span>
-                                <span class="stock-desc">HDFC Bank Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹726.95</strong></td>
-                        <td class="negative">
-                            -0.01%
-                        </td>
-                        <td class="negative">
-                            -2.72%
-                        </td>
-                        <td class="negative">
-                            -21.29%
-                        </td>
-                        <td>37.58</td>
-                        <td>₹734.28</td>
-                        <td>₹770.31</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>21.6</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 21.6%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">HDFCLIFE.NS</span>
-                                <span class="stock-desc">HDFC Life Insurance Company Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹554.8</strong></td>
-                        <td class="positive">
-                            +3.54%
-                        </td>
-                        <td class="positive">
-                            +0.7%
-                        </td>
-                        <td class="negative">
-                            -25.27%
-                        </td>
-                        <td>54.53</td>
-                        <td>₹544.0</td>
-                        <td>₹561.02</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                NEUTRAL / ACCUMULATE
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>60.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 60.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">HINDALCO.NS</span>
-                                <span class="stock-desc">Hindalco Industries Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1029.85</strong></td>
-                        <td class="negative">
-                            -1.57%
-                        </td>
-                        <td class="positive">
-                            +8.41%
-                        </td>
-                        <td class="positive">
-                            +12.4%
-                        </td>
-                        <td>54.02</td>
-                        <td>₹1014.55</td>
-                        <td>₹988.79</td>
-                        <td>
-                            <span class="badge-sig sig-strong-buy">
-                                STRONG BUY (Top Performer)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>84.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 84.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">HINDUNILVR.NS</span>
-                                <span class="stock-desc">Hindustan Unilever Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2028.0</strong></td>
-                        <td class="negative">
-                            -3.06%
-                        </td>
-                        <td class="negative">
-                            -5.88%
-                        </td>
-                        <td class="negative">
-                            -13.53%
-                        </td>
-                        <td>38.64</td>
-                        <td>₹2084.37</td>
-                        <td>₹2131.47</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>15.1</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 15.1%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ICICIBANK.NS</span>
-                                <span class="stock-desc">ICICI Bank Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1420.0</strong></td>
-                        <td class="positive">
-                            +0.21%
-                        </td>
-                        <td class="negative">
-                            -1.02%
-                        </td>
-                        <td class="positive">
-                            +1.47%
-                        </td>
-                        <td>50.34</td>
-                        <td>₹1430.25</td>
-                        <td>₹1408.35</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>49.5</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 49.5%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">INDIGO.NS</span>
-                                <span class="stock-desc">InterGlobe Aviation Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹5165.0</strong></td>
-                        <td class="negative">
-                            -3.82%
-                        </td>
-                        <td class="positive">
-                            +0.94%
-                        </td>
-                        <td class="positive">
-                            +6.23%
-                        </td>
-                        <td>45.01</td>
-                        <td>₹5272.85</td>
-                        <td>₹5220.15</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>43.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 43.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">INFY.NS</span>
-                                <span class="stock-desc">Infosys Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1121.0</strong></td>
-                        <td class="negative">
-                            -4.12%
-                        </td>
-                        <td class="positive">
-                            +7.03%
-                        </td>
-                        <td class="negative">
-                            -15.56%
-                        </td>
-                        <td>47.01</td>
-                        <td>₹1150.35</td>
-                        <td>₹1100.4</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>40.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 40.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ITC.NS</span>
-                                <span class="stock-desc">ITC Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹269.4</strong></td>
-                        <td class="negative">
-                            -3.16%
-                        </td>
-                        <td class="negative">
-                            -4.23%
-                        </td>
-                        <td class="negative">
-                            -17.21%
-                        </td>
-                        <td>35.29</td>
-                        <td>₹280.17</td>
-                        <td>₹283.59</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>15.9</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 15.9%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">JIOFIN.NS</span>
-                                <span class="stock-desc">Jio Financial Services Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹244.0</strong></td>
-                        <td class="negative">
-                            -2.03%
-                        </td>
-                        <td class="positive">
-                            +4.65%
-                        </td>
-                        <td class="negative">
-                            -5.35%
-                        </td>
-                        <td>45.18</td>
-                        <td>₹251.54</td>
-                        <td>₹243.95</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">JSWSTEEL.NS</span>
-                                <span class="stock-desc">JSW Steel Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1293.7</strong></td>
-                        <td class="positive">
-                            +1.87%
-                        </td>
-                        <td class="positive">
-                            +3.76%
-                        </td>
-                        <td class="positive">
-                            +4.29%
-                        </td>
-                        <td>55.79</td>
-                        <td>₹1283.14</td>
-                        <td>₹1261.57</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>77.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 77.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">KOTAKBANK.NS</span>
-                                <span class="stock-desc">Kotak Mahindra Bank Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹402.8</strong></td>
-                        <td class="positive">
-                            +2.98%
-                        </td>
-                        <td class="positive">
-                            +5.07%
-                        </td>
-                        <td class="negative">
-                            -6.48%
-                        </td>
-                        <td>62.12</td>
-                        <td>₹392.56</td>
-                        <td>₹391.95</td>
-                        <td>
-                            <span class="badge-sig sig-strong-buy">
-                                STRONG BUY (Top Performer)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>87.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 87.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">LT.NS</span>
-                                <span class="stock-desc">Larsen & Toubro Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹4093.0</strong></td>
-                        <td class="positive">
-                            +0.89%
-                        </td>
-                        <td class="positive">
-                            +7.93%
-                        </td>
-                        <td class="negative">
-                            -7.36%
-                        </td>
-                        <td>60.29</td>
-                        <td>₹4013.36</td>
-                        <td>₹4014.03</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                NEUTRAL / ACCUMULATE
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>64.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 64.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">M&M.NS</span>
-                                <span class="stock-desc">Mahindra & Mahindra Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹3412.2</strong></td>
-                        <td class="negative">
-                            -0.47%
-                        </td>
-                        <td class="positive">
-                            +5.65%
-                        </td>
-                        <td class="negative">
-                            -1.01%
-                        </td>
-                        <td>56.84</td>
-                        <td>₹3397.0</td>
-                        <td>₹3239.44</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>72.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 72.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">MARUTI.NS</span>
-                                <span class="stock-desc">Maruti Suzuki India Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹13565.0</strong></td>
-                        <td class="negative">
-                            -1.94%
-                        </td>
-                        <td class="positive">
-                            +1.21%
-                        </td>
-                        <td class="negative">
-                            -10.0%
-                        </td>
-                        <td>40.51</td>
-                        <td>₹13937.15</td>
-                        <td>₹13827.5</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">MAXHEALTH.NS</span>
-                                <span class="stock-desc">Max Healthcare Institute Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1000.0</strong></td>
-                        <td class="negative">
-                            -0.85%
-                        </td>
-                        <td class="negative">
-                            -7.77%
-                        </td>
-                        <td class="negative">
-                            -7.72%
-                        </td>
-                        <td>32.49</td>
-                        <td>₹1055.27</td>
-                        <td>₹1081.09</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>14.1</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 14.1%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">NESTLEIND.NS</span>
-                                <span class="stock-desc">Nestle India Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1477.1</strong></td>
-                        <td class="negative">
-                            -1.47%
-                        </td>
-                        <td class="positive">
-                            +2.02%
-                        </td>
-                        <td class="positive">
-                            +12.32%
-                        </td>
-                        <td>49.03</td>
-                        <td>₹1499.19</td>
-                        <td>₹1456.68</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>48.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 48.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">NTPC.NS</span>
-                                <span class="stock-desc">NTPC Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹340.0</strong></td>
-                        <td class="positive">
-                            +0.0%
-                        </td>
-                        <td class="negative">
-                            -2.47%
-                        </td>
-                        <td class="negative">
-                            -9.44%
-                        </td>
-                        <td>44.54</td>
-                        <td>₹342.64</td>
-                        <td>₹348.72</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>26.8</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 26.8%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ONGC.NS</span>
-                                <span class="stock-desc">Oil & Natural Gas Corporation Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹236.4</strong></td>
-                        <td class="positive">
-                            +0.0%
-                        </td>
-                        <td class="negative">
-                            -6.33%
-                        </td>
-                        <td class="negative">
-                            -14.24%
-                        </td>
-                        <td>38.85</td>
-                        <td>₹239.31</td>
-                        <td>₹242.06</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>24.8</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 24.8%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">POWERGRID.NS</span>
-                                <span class="stock-desc">Power Grid Corporation of India Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹272.4</strong></td>
-                        <td class="positive">
-                            +2.39%
-                        </td>
-                        <td class="negative">
-                            -6.0%
-                        </td>
-                        <td class="negative">
-                            -10.2%
-                        </td>
-                        <td>45.89</td>
-                        <td>₹274.82</td>
-                        <td>₹281.7</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>30.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 30.0%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">RELIANCE.NS</span>
-                                <span class="stock-desc">Reliance Industries Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1316.0</strong></td>
-                        <td class="positive">
-                            +0.46%
-                        </td>
-                        <td class="positive">
-                            +3.44%
-                        </td>
-                        <td class="negative">
-                            -7.84%
-                        </td>
-                        <td>52.23</td>
-                        <td>₹1307.97</td>
-                        <td>₹1306.59</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>73.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 73.0%; background-color: #3b82f6;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">SBILIFE.NS</span>
-                                <span class="stock-desc">SBI Life Insurance Company Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1792.9</strong></td>
-                        <td class="negative">
-                            -0.12%
-                        </td>
-                        <td class="negative">
-                            -3.27%
-                        </td>
-                        <td class="negative">
-                            -15.01%
-                        </td>
-                        <td>40.45</td>
-                        <td>₹1843.73</td>
-                        <td>₹1820.32</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>34.4</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 34.4%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">SBIN.NS</span>
-                                <span class="stock-desc">State Bank of India</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1048.7</strong></td>
-                        <td class="negative">
-                            -1.78%
-                        </td>
-                        <td class="positive">
-                            +3.57%
-                        </td>
-                        <td class="negative">
-                            -14.59%
-                        </td>
-                        <td>49.38</td>
-                        <td>₹1052.71</td>
-                        <td>₹1041.06</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">SHRIRAMFIN.NS</span>
-                                <span class="stock-desc">Shriram Finance Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1130.0</strong></td>
-                        <td class="positive">
-                            +0.71%
-                        </td>
-                        <td class="positive">
-                            +10.16%
-                        </td>
-                        <td class="positive">
-                            +6.13%
-                        </td>
-                        <td>60.85</td>
-                        <td>₹1099.37</td>
-                        <td>₹1057.78</td>
-                        <td>
-                            <span class="badge-sig sig-strong-buy">
-                                STRONG BUY (Top Performer)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>82.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 82.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">SUNPHARMA.NS</span>
-                                <span class="stock-desc">Sun Pharmaceutical Industries Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1904.0</strong></td>
-                        <td class="negative">
-                            -1.45%
-                        </td>
-                        <td class="negative">
-                            -2.01%
-                        </td>
-                        <td class="positive">
-                            +9.91%
-                        </td>
-                        <td>43.4</td>
-                        <td>₹1944.5</td>
-                        <td>₹1911.8</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>42.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 42.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TATACONSUM.NS</span>
-                                <span class="stock-desc">Tata Consumer Products Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1049.0</strong></td>
-                        <td class="negative">
-                            -2.83%
-                        </td>
-                        <td class="negative">
-                            -5.3%
-                        </td>
-                        <td class="negative">
-                            -10.48%
-                        </td>
-                        <td>39.89</td>
-                        <td>₹1082.98</td>
-                        <td>₹1095.86</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>15.4</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 15.4%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TATASTEEL.NS</span>
-                                <span class="stock-desc">Tata Steel Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹183.0</strong></td>
-                        <td class="negative">
-                            -0.27%
-                        </td>
-                        <td class="negative">
-                            -0.67%
-                        </td>
-                        <td class="negative">
-                            -12.08%
-                        </td>
-                        <td>40.03</td>
-                        <td>₹186.88</td>
-                        <td>₹188.74</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>27.7</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 27.7%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TCS.NS</span>
-                                <span class="stock-desc">Tata Consultancy Services Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2302.0</strong></td>
-                        <td class="negative">
-                            -2.5%
-                        </td>
-                        <td class="positive">
-                            +2.63%
-                        </td>
-                        <td class="negative">
-                            -13.99%
-                        </td>
-                        <td>48.1</td>
-                        <td>₹2377.47</td>
-                        <td>₹2235.39</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TECHM.NS</span>
-                                <span class="stock-desc">Tech Mahindra Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹1584.0</strong></td>
-                        <td class="negative">
-                            -2.99%
-                        </td>
-                        <td class="positive">
-                            +1.81%
-                        </td>
-                        <td class="positive">
-                            +9.93%
-                        </td>
-                        <td>47.83</td>
-                        <td>₹1626.85</td>
-                        <td>₹1530.22</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>43.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 43.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TITAN.NS</span>
-                                <span class="stock-desc">Titan Company Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹5086.1</strong></td>
-                        <td class="positive">
-                            +0.59%
-                        </td>
-                        <td class="positive">
-                            +8.28%
-                        </td>
-                        <td class="positive">
-                            +19.04%
-                        </td>
-                        <td>68.92</td>
-                        <td>₹4986.39</td>
-                        <td>₹4687.91</td>
-                        <td>
-                            <span class="badge-sig sig-bullish">
-                                BULLISH (Uptrend Momentum)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>77.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 77.0%; background-color: #10b981;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">TRENT.NS</span>
-                                <span class="stock-desc">Trent Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹2924.0</strong></td>
-                        <td class="negative">
-                            -1.81%
-                        </td>
-                        <td class="positive">
-                            +1.71%
-                        </td>
-                        <td class="positive">
-                            +8.17%
-                        </td>
-                        <td>42.31</td>
-                        <td>₹2999.26</td>
-                        <td>₹3031.6</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>30.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 30.0%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">ULTRACEMCO.NS</span>
-                                <span class="stock-desc">UltraTech Cement Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹11570.0</strong></td>
-                        <td class="negative">
-                            -0.42%
-                        </td>
-                        <td class="negative">
-                            -2.84%
-                        </td>
-                        <td class="negative">
-                            -10.84%
-                        </td>
-                        <td>43.57</td>
-                        <td>₹11843.4</td>
-                        <td>₹11684.7</td>
-                        <td>
-                            <span class="badge-sig sig-bearish">
-                                BEARISH (Downtrend / Exit)
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>34.6</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 34.6%; background-color: #f43f5e;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
-                    
-                    <tr>
-                        <td>
-                            <div class="stock-cell">
-                                <span class="stock-sym">WIPRO.NS</span>
-                                <span class="stock-desc">Wipro Ltd</span>
-                            </div>
-                        </td>
-                        <td><strong>₹180.79</strong></td>
-                        <td class="negative">
-                            -1.74%
-                        </td>
-                        <td class="positive">
-                            +3.41%
-                        </td>
-                        <td class="negative">
-                            -12.19%
-                        </td>
-                        <td>47.71</td>
-                        <td>₹183.56</td>
-                        <td>₹179.17</td>
-                        <td>
-                            <span class="badge-sig sig-neutral">
-                                CAUTION / CONSOLIDATION
-                            </span>
-                        </td>
-                        <td>
-                            <div class="progress-bar-container">
-                                <span>36.0</span>
-                                <div class="progress-bar-bg">
-                                    <div class="progress-bar-fill" style="width: 36.0%; background-color: #f59e0b;"></div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                    
-                    
                 </tbody>
             </table>
         </div>
 
-        <footer>
-            Indian Stock Market AI Screener • Quantitative Multi-Factor Performance Ranking • Generated for educational and analytical purposes.
-        </footer>
+        <footer>⚠️ For educational purposes only. Not financial advice. Data sourced from NSE via yfinance.</footer>
     </div>
 
     <script>
-        function filterTable() {
-            const input = document.getElementById("searchInput");
-            const filter = input.value.toUpperCase();
-            const table = document.getElementById("screenerTable");
-            const tr = table.getElementsByTagName("tr");
+        const API_BASE = '';
+        let allStocksData = [];
+        let lastFetchTime = null;
 
-            for (let i = 1; i < tr.length; i++) {
-                const tdSym = tr[i].getElementsByTagName("td")[0];
-                if (tdSym) {
-                    const txtValue = tdSym.textContent || tdSym.innerText;
-                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
+        function formatCurrency(val) {
+            if (val === null || val === undefined) return '—';
+            return '₹' + Number(val).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function formatPercent(val, showSign = true) {
+            if (val === null || val === undefined) return '—';
+            const prefix = showSign && val > 0 ? '+' : '';
+            return prefix + Number(val).toFixed(2) + '%';
+        }
+
+        function getSignalClass(signal) {
+            if (!signal) return 'sig-neutral';
+            const s = signal.toLowerCase();
+            if (s.includes('strong buy')) return 'sig-strong-buy';
+            if (s.includes('bullish') || s.includes('buy')) return 'sig-bullish';
+            if (s.includes('bearish') || s.includes('sell') || s.includes('exit')) return 'sig-bearish';
+            if (s.includes('caution') || s.includes('consolidation') || s.includes('neutral') || s.includes('accumulate')) return 'sig-neutral';
+            return 'sig-neutral';
+        }
+
+        function getSignalDisplay(signal) {
+            if (!signal) return 'NEUTRAL';
+            return signal;
+        }
+
+        function getProgressColor(score) {
+            if (score >= 70) return '#10b981';
+            if (score >= 50) return '#3b82f6';
+            if (score >= 30) return '#f59e0b';
+            return '#f43f5e';
+        }
+
+        function updateStats(data) {
+            if (!data || !data.results) return;
+            
+            const results = data.results.filter(r => !r.status);
+            const total = results.length;
+            const bullish = results.filter(r => r.signal && (r.signal.includes('BULLISH') || r.signal.includes('BUY'))).length;
+            const bearish = results.filter(r => r.signal && (r.signal.includes('BEARISH') || r.signal.includes('CAUTION') || r.signal.includes('EXIT'))).length;
+            const avgScore = results.length ? (results.reduce((a, b) => a + b.score, 0) / results.length).toFixed(1) : 0;
+            const avgReturn = results.length ? (results.reduce((a, b) => a + b.return_1m, 0) / results.length).toFixed(2) : 0;
+
+            document.getElementById('statTotal').textContent = total + ' Stocks';
+            document.getElementById('statBullish').textContent = bullish;
+            document.getElementById('statBearish').textContent = bearish;
+            document.getElementById('statAvgReturn').textContent = formatPercent(avgReturn);
+            document.getElementById('statAvgReturn').className = 'stat-value ' + (avgReturn >= 0 ? 'bullish' : 'bearish');
+            document.getElementById('statAvgScore').textContent = avgScore + '/100';
+        }
+
+        function renderPerformers(gridId, stocks, isTop) {
+            const grid = document.getElementById(gridId);
+            if (!stocks || stocks.length === 0) {
+                grid.innerHTML = '<div class="loading">No data available</div>';
+                return;
+            }
+
+            const medals = ['🥇', '🥈', '🥉', '#4', '#5'];
+            const cardClass = isTop ? 'top' : 'worst';
+            const pillClass = isTop ? 'top' : 'worst';
+            
+            grid.innerHTML = stocks.map((stock, i) => `
+                <div class="performer-card ${cardClass}">
+                    <span class="rank-medal">${medals[i] || '#' + (i+1)}</span>
+                    <div class="performer-ticker">${stock.symbol}</div>
+                    <div class="performer-name" title="${stock.name}">${stock.name}</div>
+                    <div class="metric-row">
+                        <span class="metric-label">Close Price</span>
+                        <span class="metric-val">${formatCurrency(stock.close_price || stock.close)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">1-Week Return</span>
+                        <span class="metric-val ${(stock.return_1w || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_1w)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">1-Month Return</span>
+                        <span class="metric-val ${(stock.return_1m || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_1m)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Period Return</span>
+                        <span class="metric-val ${(stock.return_period || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_period)}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">RSI (14)</span>
+                        <span class="metric-val">${stock.rsi?.toFixed(2) || '—'}</span>
+                    </div>
+                    <div class="score-pill ${pillClass}">
+                        Score: ${stock.score?.toFixed(1) || '—'}/100 • ${getSignalDisplay(stock.signal)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('screenerBody');
+            if (!data || !data.results) {
+                tbody.innerHTML = '<tr><td colspan="10" class="error-message">No data available</td></tr>';
+                return;
+            }
+
+            const results = data.results.filter(r => !r.status);
+            allStocksData = results;
+
+            tbody.innerHTML = results.map(stock => `
+                <tr>
+                    <td>
+                        <div class="stock-cell">
+                            <span class="stock-sym">${stock.symbol}</span>
+                            <span class="stock-desc">${stock.name}</span>
+                        </div>
+                    </td>
+                    <td><strong>${formatCurrency(stock.close_price || stock.close)}</strong></td>
+                    <td class="${(stock.return_1w || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_1w)}</td>
+                    <td class="${(stock.return_1m || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_1m)}</td>
+                    <td class="${(stock.return_period || 0) >= 0 ? 'positive' : 'negative'}">${formatPercent(stock.return_period)}</td>
+                    <td>${stock.rsi?.toFixed(2) || '—'}</td>
+                    <td>${formatCurrency(stock.sma_20)}</td>
+                    <td>${formatCurrency(stock.sma_50)}</td>
+                    <td class="signal-cell">
+                        <span class="badge-sig ${getSignalClass(stock.signal)}">${getSignalDisplay(stock.signal)}</span>
+                    </td>
+                    <td class="score-cell">
+                        <div class="progress-bar-container">
+                            <span>${stock.score?.toFixed(1) || '—'}</span>
+                            <div class="progress-bar-bg">
+                                <div class="progress-bar-fill" style="width: ${stock.score || 0}%; background-color: ${getProgressColor(stock.score)};"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterTable() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#screenerBody tr');
+            
+            rows.forEach(row => {
+                const symbol = row.querySelector('.stock-sym')?.textContent.toLowerCase() || '';
+                const name = row.querySelector('.stock-desc')?.textContent.toLowerCase() || '';
+                if (symbol.includes(input) || name.includes(input)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
+            });
+        }
+
+        function updateLiveStatus(connected) {
+            const status = document.getElementById('liveStatus');
+            const dot = document.querySelector('.dot-live');
+            if (connected) {
+                status.textContent = 'LIVE';
+                dot.style.backgroundColor = '#10b981';
+            } else {
+                status.textContent = 'OFFLINE';
+                dot.style.backgroundColor = '#f43f5e';
             }
         }
+
+        function updateLastUpdated(timestamp) {
+            const el = document.getElementById('lastUpdated');
+            if (timestamp) {
+                const date = new Date(timestamp);
+                el.textContent = 'Updated: ' + date.toLocaleString();
+            }
+        }
+
+        async function loadData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.querySelector('.refresh-icon').textContent = '⟳';
+            btn.querySelector('.refresh-icon').style.animation = 'spin 1s linear infinite';
+
+            try {
+                updateLiveStatus(false);
+                
+                const response = await fetch(API_BASE + '/api/analysis/latest');
+                if (!response.ok) throw new Error('Failed to fetch analysis');
+                
+                const data = await response.json();
+                
+                updateStats(data);
+                renderPerformers('topPerformersGrid', data.top_performers, true);
+                
+                // Get worst 5 performers (bottom 5 by score)
+                const validResults = data.results.filter(r => !r.status);
+                const worstPerformers = [...validResults]
+                    .sort((a, b) => (a.score || 0) - (b.score || 0))
+                    .slice(0, 5);
+                renderPerformers('worstPerformersGrid', worstPerformers, false);
+                
+                renderTable(data);
+                updateLastUpdated(data.timestamp);
+                updateLiveStatus(true);
+                
+            } catch (error) {
+                console.error('Error loading data:', error);
+                updateLiveStatus(false);
+                document.getElementById('screenerBody').innerHTML = 
+                    '<tr><td colspan="10" class="error-message">Error loading data: ' + error.message + '</td></tr>';
+                document.getElementById('topPerformersGrid').innerHTML = 
+                    '<div class="error-message">Error loading top performers: ' + error.message + '</div>';
+                document.getElementById('worstPerformersGrid').innerHTML = 
+                    '<div class="error-message">Error loading worst performers: ' + error.message + '</div>';
+            } finally {
+                btn.disabled = false;
+                btn.querySelector('.refresh-icon').textContent = '⟳';
+                btn.querySelector('.refresh-icon').style.animation = '';
+            }
+        }
+
+        // Auto-refresh every 5 minutes
+        setInterval(loadData, 5 * 60 * 1000);
+
+        // Initial load
+        loadData();
     </script>
 </body>
 </html>
-        

@@ -31,6 +31,9 @@ jobs:
       - name: Generate weekly ranking report
         run: python weekly_ranking_report.py
 
+      - name: Build Gauravi model test bench
+        run: python build_model_test.py --period 3y
+
       - name: Build Pages site
         run: python build_rankings_index.py --publish-dir public
 

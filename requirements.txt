@@ -10,5 +10,8 @@ requests>=2.31
 # HTML table parser backend for the moneycontrol FII/DII fallback tier
 # (pandas.read_html needs lxml; without it that tier raises ImportError and is skipped).
 lxml>=5.0
+# Web API server for dashboards
+fastapi>=0.110
+uvicorn>=0.30
 # Test suite (tests/ only -- scripts/manual/ is excluded via pytest.ini)
 pytest>=8.0

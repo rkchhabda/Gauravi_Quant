@@ -30,6 +30,25 @@ def main():
         if f.endswith((".html", ".json")):
             shutil.copy2(os.path.join(src, f), os.path.join(pub, f))
 
+    # Fold the interactive model test bench into the same static site, if built.
+    # model_test.html references ./model_test_data.js, so both must land flat
+    # in the publish root together.
+    mt_dir = os.path.join("outputs", "model_test")
+    has_bench = False
+    if os.path.isdir(mt_dir):
+        for f in ("model_test.html", "model_test_data.js"):
+            srcf = os.path.join(mt_dir, f)
+            if os.path.exists(srcf):
+                shutil.copy2(srcf, os.path.join(pub, f))
+                if f == "model_test.html":
+                    has_bench = True
+
+    bench_link = ('<h2>Interactive model test bench</h2>'
+                  '<p><a href="model_test.html">Open the Gauravi model test bench →</a> '
+                  '<span class="disc">pick any NIFTY-100 stock, model and horizon; '
+                  'see its signal and honest historical accuracy.</span></p>'
+                  if has_bench else "")
+
     items = "\n".join(
         f'<li><a href="{f}">{f[8:-5]}</a></li>' for f in reports
     )
@@ -47,8 +66,9 @@ iframe{{width:100%;height:1200px;border:1px solid #30363d;border-radius:10px;bac
 li{{margin:3px 0}}a{{color:#58a6ff}}
 .disc{{color:#8b949e;font-size:.75rem;margin-top:20px}}
 </style></head><body><div class="wrap">
-<h1>NIFTY-100 Weekly Rankings</h1>
+<h1>Gauravi <span style="color:#8b949e;font-weight:400;font-size:1rem">· NIFTY-100 factor model</span></h1>
 <div class="sub">momentum + reversal blend &middot; updated every Monday</div>
+{bench_link}
 <h2>Latest report ({latest[8:-5]})</h2>
 <iframe src="{latest}" title="latest ranking"></iframe>
 <h2>Archive</h2>
@@ -57,7 +77,8 @@ li{{margin:3px 0}}a{{color:#58a6ff}}
 </div></body></html>"""
     with open(os.path.join(pub, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"Published {len(reports)} report(s) to {pub}/ (latest: {latest})")
+    print(f"Published {len(reports)} report(s) to {pub}/ (latest: {latest}"
+          f"{'; + model test bench' if has_bench else ''})")
 
 
 if __name__ == "__main__":
