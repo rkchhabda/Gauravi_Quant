@@ -10,8 +10,9 @@ requests>=2.31
 # HTML table parser backend for the moneycontrol FII/DII fallback tier
 # (pandas.read_html needs lxml; without it that tier raises ImportError and is skipped).
 lxml>=5.0
-# Web API server for dashboards
-fastapi>=0.110
-uvicorn>=0.30
+# Web API server for dashboards - pin pydantic<2.10 to avoid Rust compilation
+fastapi==0.110.1
+uvicorn==0.29.0
+pydantic==2.9.2
 # Test suite (tests/ only -- scripts/manual/ is excluded via pytest.ini)
 pytest>=8.0

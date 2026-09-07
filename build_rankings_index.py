@@ -43,6 +43,25 @@ def main():
                 if f == "model_test.html":
                     has_bench = True
 
+    # Fold the dataset verification demo in too, if it has been built. It is the
+    # page a prospect is sent to: every figure on it is computed from the release.
+    demo_dir = os.path.join("outputs", "demo")
+    has_demo = False
+    for f in ("demo.html", "demo_metrics.json"):
+        srcf = os.path.join(demo_dir, f)
+        if os.path.exists(srcf):
+            shutil.copy2(srcf, os.path.join(pub, f))
+            if f == "demo.html":
+                has_demo = True
+
+    demo_link = ('<h2>Dataset verification demo</h2>'
+                 '<p><a href="demo.html">Open the verification demo &rarr;</a> '
+                 '<span class="disc">measured hit-rate with error bars, calibrated '
+                 'vs naive t-stats, coverage, validation gates, checksums, and the '
+                 'bugs we found in our own data. '
+                 '<a href="demo_metrics.json">machine-readable metrics</a>.</span></p>'
+                 if has_demo else "")
+
     bench_link = ('<h2>Interactive model test bench</h2>'
                   '<p><a href="model_test.html">Open the Gauravi model test bench →</a> '
                   '<span class="disc">pick any NIFTY-100 stock, model and horizon; '
@@ -68,6 +87,7 @@ li{{margin:3px 0}}a{{color:#58a6ff}}
 </style></head><body><div class="wrap">
 <h1>Gauravi <span style="color:#8b949e;font-weight:400;font-size:1rem">· NIFTY-100 factor model</span></h1>
 <div class="sub">momentum + reversal blend &middot; updated every Monday</div>
+{demo_link}
 {bench_link}
 <h2>Latest report ({latest[8:-5]})</h2>
 <iframe src="{latest}" title="latest ranking"></iframe>
@@ -78,7 +98,8 @@ li{{margin:3px 0}}a{{color:#58a6ff}}
     with open(os.path.join(pub, "index.html"), "w", encoding="utf-8") as f:
         f.write(html)
     print(f"Published {len(reports)} report(s) to {pub}/ (latest: {latest}"
-          f"{'; + model test bench' if has_bench else ''})")
+          f"{'; + model test bench' if has_bench else ''}"
+          f"{'; + verification demo' if has_demo else ''})")
 
 
 if __name__ == "__main__":
