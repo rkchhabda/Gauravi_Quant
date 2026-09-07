@@ -3,7 +3,7 @@ services:
     name: gauravi-trading-system
     env: python
     plan: free
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "pip install -r requirements-render.txt"
     startCommand: "python server.py"
     envVars:
       - key: PYTHON_VERSION
