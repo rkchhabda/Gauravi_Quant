@@ -1,0 +1,208 @@
+{
+  "version": "2026.08",
+  "built_utc": "2026-08-29 05:04 UTC",
+  "as_of": "2026-08-27",
+  "horizon_days": 30,
+  "n_symbols": 100,
+  "n_rows": 123709,
+  "delivery_coverage_pct": 93.7,
+  "validation": {
+    "schema": {
+      "passed": true,
+      "detail": "7 panel / 36 factor cols"
+    },
+    "no_lookahead": {
+      "passed": true,
+      "detail": "all avail_date > fy_end"
+    },
+    "returns_sanity": {
+      "passed": true,
+      "detail": "no impossible or extreme returns"
+    },
+    "duplicates": {
+      "passed": true,
+      "detail": "0 duplicate (sym, date) rows"
+    },
+    "coverage": {
+      "passed": true,
+      "detail": "rev=98%, mom_12_1=80%, mom_6m=90%, liq=98%, deliv_pct=94%, deliv_chg20=93%, deliv_x_ret=92%, earn_yield=64%, roe=62%, earn_growth=43%, profit_margin=62%"
+    }
+  },
+  "checksums": {
+    "panel_nifty100.parquet": "024f70946df91cb8",
+    "fundamentals_pit.parquet": "b9862b377da9cb40",
+    "factors.parquet": "7fe7e123e9b2b9fe"
+  },
+  "hit_rate": {
+    "score_mr": {
+      "hit_rate": 51.59235668789809,
+      "se": 2.3027097487993387,
+      "ci_lo": 47.07904558025139,
+      "ci_hi": 56.10566779554479,
+      "base_rate": 51.276503678061445,
+      "edge_pp": 0.3158530098366419,
+      "spread_pp": 0.08543473958753223,
+      "n_picks": 471,
+      "n_rebalances": 30,
+      "beats_base": false
+    },
+    "score_fund3": {
+      "hit_rate": 50.53533190578159,
+      "se": 2.3135914495890746,
+      "ci_lo": 46.000692664587,
+      "ci_hi": 55.06997114697617,
+      "base_rate": 51.276503678061445,
+      "edge_pp": -0.7411717722798583,
+      "spread_pp": -0.3508750033919112,
+      "n_picks": 467,
+      "n_rebalances": 30,
+      "beats_base": false
+    }
+  },
+  "hit_rate_all_rows": {
+    "score_mr": {
+      "hit_rate": 52.45398773006135,
+      "se": 1.955791283943862,
+      "ci_lo": 48.62063681353138,
+      "ci_hi": 56.28733864659131,
+      "base_rate": 52.646414030692135,
+      "edge_pp": -0.19242630063078803,
+      "spread_pp": 0.16259429909005163,
+      "n_picks": 652,
+      "n_rebalances": 32,
+      "beats_base": false
+    },
+    "score_fund3": {
+      "hit_rate": 56.30081300813008,
+      "se": 2.236204207807828,
+      "ci_lo": 51.91785276082673,
+      "ci_hi": 60.68377325543343,
+      "base_rate": 51.67980091248444,
+      "edge_pp": 4.6210120956456375,
+      "spread_pp": 0.27150401298725557,
+      "n_picks": 492,
+      "n_rebalances": 34,
+      "beats_base": true
+    }
+  },
+  "ic": [
+    {
+      "factor": "rank_deliv_chg20",
+      "IC": -0.023501243100058404,
+      "t_naive": -6.848873450100104,
+      "t_nonovlp": -1.3289582574495222,
+      "n_indep": 39,
+      "significant": false
+    },
+    {
+      "factor": "rank_roe",
+      "IC": -0.03902309284949413,
+      "t_naive": -8.4275068853697,
+      "t_nonovlp": -1.1790017022444241,
+      "n_indep": 25,
+      "significant": false
+    },
+    {
+      "factor": "rank_earn_yield",
+      "IC": 0.03349206750342672,
+      "t_naive": 5.920045937445468,
+      "t_nonovlp": 0.7518003624292559,
+      "n_indep": 25,
+      "significant": false
+    },
+    {
+      "factor": "rank_deliv_pct",
+      "IC": -0.004415343276185818,
+      "t_naive": -0.9315556015726765,
+      "t_nonovlp": -0.718781764625259,
+      "n_indep": 40,
+      "significant": false
+    },
+    {
+      "factor": "rank_profit_margin",
+      "IC": -0.013729325791624851,
+      "t_naive": -2.9308818927874936,
+      "t_nonovlp": -0.6441431473612669,
+      "n_indep": 25,
+      "significant": false
+    },
+    {
+      "factor": "rank_rev",
+      "IC": 0.008177576202466341,
+      "t_naive": 1.6842735670288407,
+      "t_nonovlp": 0.40710703137720583,
+      "n_indep": 40,
+      "significant": false
+    },
+    {
+      "factor": "rank_mom_12_1",
+      "IC": 0.00961944713455797,
+      "t_naive": 1.6708806457240468,
+      "t_nonovlp": 0.27436598473949786,
+      "n_indep": 32,
+      "significant": false
+    },
+    {
+      "factor": "score_fund3",
+      "IC": 0.012281653882344118,
+      "t_naive": 2.103781052267327,
+      "t_nonovlp": 0.22895579712999226,
+      "n_indep": 24,
+      "significant": false
+    },
+    {
+      "factor": "rank_liq",
+      "IC": -0.01593045341002927,
+      "t_naive": -4.296372582866635,
+      "t_nonovlp": -0.21999470178183253,
+      "n_indep": 40,
+      "significant": false
+    },
+    {
+      "factor": "score_mr",
+      "IC": 0.011399006318695157,
+      "t_naive": 2.4647125669806305,
+      "t_nonovlp": 0.196453770321571,
+      "n_indep": 32,
+      "significant": false
+    },
+    {
+      "factor": "rank_deliv_x_ret",
+      "IC": -0.006967015214667388,
+      "t_naive": -1.4690860207649128,
+      "t_nonovlp": -0.1909479528672227,
+      "n_indep": 39,
+      "significant": false
+    },
+    {
+      "factor": "rank_mom_6m",
+      "IC": 0.0012590509299417337,
+      "t_naive": 0.20801555280839953,
+      "t_nonovlp": -0.18557397099353903,
+      "n_indep": 36,
+      "significant": false
+    },
+    {
+      "factor": "rank_earn_growth",
+      "IC": 0.0037532298435555135,
+      "t_naive": 0.7092738513826794,
+      "t_nonovlp": -0.003367130360516406,
+      "n_indep": 17,
+      "significant": false
+    }
+  ],
+  "coverage_pct": {
+    "rank_liq": 98.5,
+    "rank_rev": 98.4,
+    "rank_deliv_pct": 93.7,
+    "rank_deliv_chg20": 93.3,
+    "rank_deliv_x_ret": 92.2,
+    "rank_mom_6m": 89.8,
+    "rank_mom_12_1": 79.6,
+    "rank_earn_yield": 64.0,
+    "rank_roe": 61.7,
+    "rank_profit_margin": 61.7,
+    "rank_earn_growth": 42.6
+  },
+  "any_factor_significant": false
+}

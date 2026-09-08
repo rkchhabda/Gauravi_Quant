@@ -1,0 +1,46 @@
+{
+  "version": "2026.08",
+  "built_utc": "2026-08-29 00:18 UTC",
+  "period": "5y",
+  "horizon_days": 30,
+  "n_symbols": 100,
+  "date_min": "2021-08-30",
+  "date_max": "2026-08-27",
+  "rows": {
+    "panel": 123709,
+    "factors": 123709,
+    "fundamentals": 459
+  },
+  "validation": {
+    "schema": {
+      "passed": true,
+      "detail": "7 panel / 36 factor cols"
+    },
+    "no_lookahead": {
+      "passed": true,
+      "detail": "all avail_date > fy_end"
+    },
+    "returns_sanity": {
+      "passed": true,
+      "detail": "no impossible or extreme returns"
+    },
+    "duplicates": {
+      "passed": true,
+      "detail": "0 duplicate (sym, date) rows"
+    },
+    "coverage": {
+      "passed": true,
+      "detail": "rev=98%, mom_12_1=80%, mom_6m=90%, liq=98%, deliv_pct=94%, deliv_chg20=93%, deliv_x_ret=92%, earn_yield=64%, roe=62%, earn_growth=43%, profit_margin=62%"
+    }
+  },
+  "checksums": {
+    "panel_nifty100.parquet": "024f70946df91cb8",
+    "fundamentals_pit.parquet": "b9862b377da9cb40",
+    "factors.parquet": "7fe7e123e9b2b9fe"
+  },
+  "size_mb": {
+    "panel_nifty100.parquet": 4.68,
+    "fundamentals_pit.parquet": 0.02,
+    "factors.parquet": 16.38
+  }
+}

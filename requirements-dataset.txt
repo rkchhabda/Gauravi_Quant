@@ -1,0 +1,8 @@
+# Dataset release: parquet build for the Gauravi NSE factor dataset.
+# Installed only by .github/workflows/dataset_release.yml -- the weekly ranking
+# product does not need these.
+-r requirements.txt
+# Parquet engine for the panel/factors/fundamentals files.
+pyarrow>=15.0
+# NSE delivery % -- the one field yfinance does not carry.
+jugaad-data>=0.35

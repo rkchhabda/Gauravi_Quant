@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gauravi &mdash; NSE Factor Dataset &middot; verification demo</title>
+<style>
+*{box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;
+ margin:0;padding:32px 16px;line-height:1.55}
+.wrap{max-width:1040px;margin:0 auto}
+h1{font-size:1.6rem;margin:0 0 4px}
+h2{color:#58a6ff;font-size:1.05rem;margin:34px 0 6px;
+ border-bottom:1px solid #21262d;padding-bottom:6px}
+.sub{color:#8b949e;font-size:.9rem}
+.note{color:#8b949e;font-size:.82rem;margin:6px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;
+ margin:16px 0}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:14px}
+.card .k{color:#8b949e;font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+.card .v{font-size:1.5rem;font-weight:600;margin-top:4px}
+.card .f{color:#8b949e;font-size:.75rem;margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
+th,td{padding:7px 9px;text-align:right;border-bottom:1px solid #21262d}
+th{color:#8b949e;font-weight:600;text-align:right;font-size:.75rem;
+ text-transform:uppercase;letter-spacing:.4px}
+th:first-child,td:first-child{text-align:left}
+tbody tr:hover{background:#161b22}
+code{background:#161b22;padding:1px 5px;border-radius:4px;font-size:.85em}
+pre{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px;
+ overflow-x:auto;font-size:.8rem}
+.pass{color:#3fb950}.fail{color:#f85149}.warn{color:#d29922}.dim{color:#8b949e}
+.pill{display:inline-block;background:#161b22;border:1px solid #30363d;
+ border-radius:20px;padding:2px 10px;font-size:.75rem;margin:2px 4px 2px 0}
+.box{background:#161b22;border:1px solid #30363d;border-left:3px solid #d29922;
+ border-radius:8px;padding:12px 14px;margin:12px 0;font-size:.87rem}
+.box.ok{border-left-color:#3fb950}
+.box b{color:#e6edf3}
+footer{color:#8b949e;font-size:.78rem;margin-top:40px;border-top:1px solid #21262d;
+ padding-top:14px}
+a{color:#58a6ff}
+</style></head><body><div class="wrap">
+
+<h1>Gauravi &mdash; NSE Factor Dataset</h1>
+<div class="sub">Release <code>2026.08</code> &middot;
+100 NIFTY-100 symbols &middot; 2021-08-30 to 2026-08-27
+&middot; horizon 30d &middot; page built 2026-08-29 05:04 UTC</div>
+
+<div class="box ok"><b>What this page is.</b> Every number below is computed from
+the release files by <code>build_demo.py</code> &mdash; nothing is typed in by
+hand. Download the free sample, run the same script, and you get the same page.
+That is the only claim we ask you to take on trust.</div>
+
+<h2>1. Measured performance, with the error bars attached</h2>
+<div class="grid"><div class="card"><div class="k">Top-quintile hit rate (30d)</div><div class="v ">52.45%</div><div class="f">&plusmn;1.96pp SE &middot; 95% CI 48.6&ndash;56.3%</div></div><div class="card"><div class="k">All-stock base rate</div><div class="v warn">52.65%</div><div class="f">edge -0.19pp &mdash; NOT distinguishable from the base rate</div></div><div class="card"><div class="k">Independent rebalances</div><div class="v ">32</div><div class="f">652 non-overlapping picks</div></div><div class="card"><div class="k">Quintile spread</div><div class="v ">+0.16pp</div><div class="f">top minus bottom quintile, 30d excess</div></div><div class="card"><div class="k">Delivery-% coverage</div><div class="v ">94%</div><div class="f">field absent from yfinance entirely</div></div><div class="card"><div class="k">Rows / dates</div><div class="v ">123,709</div><div class="f">1,239 trading dates &middot; 100 symbols</div></div></div>
+<p class="note">A coin flip is not 50% here: excess returns are skewed, so the all-stock base rate below is the number to beat. Hit rate = share of top-quintile picks whose 30-day
+return beat the benchmark, on <b>non-overlapping</b> holds only.</p>
+
+<h2>2. Factor information coefficients &mdash; naive vs calibrated</h2>
+<p class="note">Daily ICs against a 30-day forward return overlap, which inflates a
+naive t-stat by roughly &radic;30. Compare the two t columns: that gap is why most
+published NSE factor results do not replicate. <b>Nothing here is significant</b>,
+and we would rather you learn that from us than from your own money.</p>
+<table><thead><tr><th>factor</th><th>IC</th><th>t_naive</th><th>t_nonovlp</th><th>n_indep</th><th>significant</th></tr></thead><tbody><tr><td class="">rank_deliv_chg20</td><td class="">-0.0235</td><td class="">-6.85</td><td class="">-1.33</td><td class="">39</td><td class="fail">no</td></tr><tr><td class="">rank_roe</td><td class="">-0.0390</td><td class="">-8.43</td><td class="">-1.18</td><td class="">25</td><td class="fail">no</td></tr><tr><td class="">rank_earn_yield</td><td class="">+0.0335</td><td class="">+5.92</td><td class="">+0.75</td><td class="">25</td><td class="fail">no</td></tr><tr><td class="">rank_deliv_pct</td><td class="">-0.0044</td><td class="">-0.93</td><td class="">-0.72</td><td class="">40</td><td class="fail">no</td></tr><tr><td class="">rank_profit_margin</td><td class="">-0.0137</td><td class="">-2.93</td><td class="">-0.64</td><td class="">25</td><td class="fail">no</td></tr><tr><td class="">rank_rev</td><td class="">+0.0082</td><td class="">+1.68</td><td class="">+0.41</td><td class="">40</td><td class="fail">no</td></tr><tr><td class="">rank_mom_12_1</td><td class="">+0.0096</td><td class="">+1.67</td><td class="">+0.27</td><td class="">32</td><td class="fail">no</td></tr><tr><td class="">score_fund3</td><td class="">+0.0123</td><td class="">+2.10</td><td class="">+0.23</td><td class="">24</td><td class="fail">no</td></tr><tr><td class="">rank_liq</td><td class="">-0.0159</td><td class="">-4.30</td><td class="">-0.22</td><td class="">40</td><td class="fail">no</td></tr><tr><td class="">score_mr</td><td class="">+0.0114</td><td class="">+2.46</td><td class="">+0.20</td><td class="">32</td><td class="fail">no</td></tr><tr><td class="">rank_deliv_x_ret</td><td class="">-0.0070</td><td class="">-1.47</td><td class="">-0.19</td><td class="">39</td><td class="fail">no</td></tr><tr><td class="">rank_mom_6m</td><td class="">+0.0013</td><td class="">+0.21</td><td class="">-0.19</td><td class="">36</td><td class="fail">no</td></tr><tr><td class="">rank_earn_growth</td><td class="">+0.0038</td><td class="">+0.71</td><td class="">-0.00</td><td class="">17</td><td class="fail">no</td></tr></tbody></table>
+
+<h2>3. The comparison trap, shown deliberately</h2>
+<p class="note">Composites needing fundamentals are only defined on the rows where
+fundamentals exist. Score them there and they look better; score them on identical
+rows and the ranking changes. Read the two pairs of columns together.</p>
+<table><thead><tr><th>composite</th><th>all rows %</th><th>all n</th><th>common rows %</th><th>common n</th><th>SE pp</th></tr></thead><tbody><tr><td class="">score_mr</td><td class="">52.45</td><td class="">652</td><td class="">51.59</td><td class="">471</td><td class="">&plusmn;2.30</td></tr><tr><td class="">score_fund3</td><td class="">56.30</td><td class="">492</td><td class="">50.54</td><td class="">467</td><td class="">&plusmn;2.31</td></tr></tbody></table>
+
+<h2>4. Data coverage per column</h2>
+<p class="note">Amber = under 70% non-null. Check this before you trust any factor
+built on it.</p>
+<table><thead><tr><th>column</th><th>non-null %</th></tr></thead><tbody><tr><td class="">rank_liq</td><td class="">98.5</td></tr><tr><td class="">rank_rev</td><td class="">98.4</td></tr><tr><td class="">rank_deliv_pct</td><td class="">93.7</td></tr><tr><td class="">rank_deliv_chg20</td><td class="">93.3</td></tr><tr><td class="">rank_deliv_x_ret</td><td class="">92.2</td></tr><tr><td class="">rank_mom_6m</td><td class="">89.8</td></tr><tr><td class="">rank_mom_12_1</td><td class="">79.6</td></tr><tr><td class="">rank_earn_yield</td><td class="warn">64.0</td></tr><tr><td class="">rank_roe</td><td class="warn">61.7</td></tr><tr><td class="">rank_profit_margin</td><td class="warn">61.7</td></tr><tr><td class="">rank_earn_growth</td><td class="warn">42.6</td></tr></tbody></table>
+
+<h2>5. Validation gates on this build</h2>
+<div><span class="pill"><span class="pass">PASS</span> schema</span><span class="pill"><span class="pass">PASS</span> no_lookahead</span><span class="pill"><span class="pass">PASS</span> returns_sanity</span><span class="pill"><span class="pass">PASS</span> duplicates</span><span class="pill"><span class="pass">PASS</span> coverage</span></div>
+<p class="note">The build script exits non-zero if any gate fails, so a bad month
+does not ship. Checksums (SHA-256, first 16 hex) for what you receive:</p>
+<div><span class="pill">panel_nifty100.parquet <span class="dim">4.68 MB &middot; 024f70946df91cb8</span></span><span class="pill">fundamentals_pit.parquet <span class="dim">0.02 MB &middot; b9862b377da9cb40</span></span><span class="pill">factors.parquet <span class="dim">16.38 MB &middot; 7fe7e123e9b2b9fe</span></span></div>
+
+<h2>6. Bugs we found in our own data</h2>
+<p class="note">Kept on this page on purpose. A data vendor with no bug log either
+has not looked or is not telling you.</p>
+<div class="box"><b>Unadjusted NSE prices</b><br>Driving returns off raw NSE closes ignored splits and produced an 11% hit-rate. Returns now come from adjusted prices only.<br><span class="dim">Caught by the returns-sanity gate (no return may be < -100%).</span></div><div class="box"><b>Friday labelled as Sunday</b><br>The delivery source returned each week's Friday row dated the following Sunday, silently dropping ~1 trading day per week (delivery coverage 75% instead of 94%).<br><span class="dim">Fixed in data_layer._fix_weekend_dates; CI now fails if coverage < 85%.</span></div><div class="box"><b>Delivery edge disappeared</b><br>Before that fix, a delivery-based composite measured 53.5% and we reported it. On corrected data it no longer beats plain momentum+reversal. We retracted the number.<br><span class="dim">The retraction is recorded in PROGRESS.md section 6.</span></div><div class="box"><b>Coverage mistaken for alpha</b><br>A fundamentals composite looked ~4pp better than the price model -- but was scored on the 64% of rows where fundamentals exist. On the common sample the ranking flips.<br><span class="dim">Both are now always compared on identical rows.</span></div>
+
+<h2>7. Current top 10 by <code>score_mr</code> (2026-08-27)</h2>
+<p class="note">Shown so you can see the shape of the output. This is a
+<b>ranking of a factor score</b>, not a recommendation, and on the evidence above
+its edge is not statistically established.</p>
+<table><thead><tr><th>sym</th><th>score</th><th>reversal</th><th>momentum</th><th>delivery %</th></tr></thead><tbody><tr><td class="">NESTLEIND.NS</td><td class="">0.869</td><td class="">+0.046</td><td class="">+0.317</td><td class="">n/a</td></tr><tr><td class="">CUMMINSIND.NS</td><td class="">0.848</td><td class="">+0.038</td><td class="">+0.405</td><td class="">n/a</td></tr><tr><td class="">FEDERALBNK.NS</td><td class="">0.828</td><td class="">+0.023</td><td class="">+0.842</td><td class="">n/a</td></tr><tr><td class="">M&MFIN.NS</td><td class="">0.828</td><td class="">+0.023</td><td class="">+0.513</td><td class="">n/a</td></tr><tr><td class="">SUNPHARMA.NS</td><td class="">0.813</td><td class="">+0.044</td><td class="">+0.212</td><td class="">n/a</td></tr><tr><td class="">ADANIGREEN.NS</td><td class="">0.808</td><td class="">+0.022</td><td class="">+0.424</td><td class="">n/a</td></tr><tr><td class="">TECHM.NS</td><td class="">0.778</td><td class="">+0.050</td><td class="">+0.116</td><td class="">n/a</td></tr><tr><td class="">ASIANPAINT.NS</td><td class="">0.753</td><td class="">+0.042</td><td class="">+0.118</td><td class="">n/a</td></tr><tr><td class="">INDUSINDBK.NS</td><td class="">0.737</td><td class="">+0.008</td><td class="">+0.315</td><td class="">n/a</td></tr><tr><td class="">POWERGRID.NS</td><td class="">0.722</td><td class="">+0.073</td><td class="">+0.024</td><td class="">n/a</td></tr></tbody></table>
+
+<h2>8. Reproduce it yourself</h2>
+<pre>pip install pandas pyarrow numpy
+unzip gauravi-nse-factors-2026.08-sample.zip &amp;&amp; cd gauravi-nse-factors-2026.08-sample
+python -c "import gauravi_data as gd; print(gd.manifest()['validation'])"
+python build_demo.py            # regenerates this page from the data</pre>
+
+<h2>9. Known limitations</h2>
+<div class="box"><b>Survivorship bias.</b> The universe is <i>current</i>
+NIFTY-100 membership, not point-in-time. Delisted and demoted names are absent.
+Point-in-time membership is the top roadmap item.</div>
+<div class="box"><b>Fundamentals are annual</b>, with a 90-day reporting lag.
+Free quarterly NSE history is too short to use.</div>
+<div class="box"><b><code>fwd_excess</code> is a forward-looking research target. It contains future information by construction and must never be used as a feature &mdash; it is in the file so you can score your own signals against it.</b></div>
+<div class="box"><b>No statistical significance.</b> Not one factor in section 2
+clears |t| = 1.96 on the calibrated test. The binding constraint is sample size:
+32
+independent rebalances cannot separate 53% from 55%.</div>
+
+<footer>
+Gauravi NSE Factor Dataset &middot; research data only.
+<b>Not investment advice, not a signal service, not a recommendation to buy or
+sell any security.</b> No SEBI Research Analyst or Investment Adviser
+registration is claimed or implied. Past measured behaviour of a factor is not a
+forecast. You are buying data and documentation, not returns.
+</footer>
+</div></body></html>

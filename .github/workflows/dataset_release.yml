@@ -1,0 +1,183 @@
+name: Dataset Release
+
+# Monthly refresh of the sellable dataset (see DATA_PRODUCT.md item 7).
+# A stale dataset kills renewals faster than a missing feature, so this must not
+# depend on anyone remembering to run it.
+#
+# Outputs, per run:
+#   - gauravi-nse-factors-<version>.zip         paid full release (100 symbols, 5y)
+#   - gauravi-nse-factors-<version>-sample.zip  free 10-symbol sample
+# Both are attached to a GitHub Release so the download link is stable.
+
+on:
+  schedule:
+    - cron: '40 2 2 * *'   # 2nd of each month, 02:40 UTC (08:10 IST)
+  workflow_dispatch:
+    inputs:
+      period:
+        description: 'History window for the full release'
+        default: '5y'
+      publish:
+        description: 'Create a GitHub Release with the zips'
+        type: boolean
+        default: true
+      refresh_fundamentals:
+        description: 'Re-fetch fundamentals instead of using the cache'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dataset-release
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements-dataset.txt
+
+      # The jugaad delivery cache is the expensive part: a cold cache means ~100
+      # sequential NSE requests, which is slow and gets rate-limited. Restore it
+      # across runs and let build_dataset_release.py backfill only the new month.
+      - name: Restore data cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/cache_jugaad
+            data/fundamentals.parquet
+          key: gauravi-data-${{ github.run_id }}
+          restore-keys: |
+            gauravi-data-
+
+      - name: Resolve version
+        id: ver
+        run: echo "version=$(date -u +%Y.%m)" >> "$GITHUB_OUTPUT"
+
+      - name: Build full release
+        run: |
+          python build_dataset_release.py \
+            --version "${{ steps.ver.outputs.version }}" \
+            --period "${{ inputs.period || '5y' }}" \
+            ${{ inputs.refresh_fundamentals && '--refresh-fundamentals' || '' }}
+
+      - name: Build free sample
+        run: python build_dataset_release.py --version "${{ steps.ver.outputs.version }}" --sample
+
+      # Saved with `always()` so a validation failure still preserves the fetched
+      # history -- re-running should not re-hit NSE for data we already have.
+      - name: Save data cache
+        uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: |
+            data/cache_jugaad
+            data/fundamentals.parquet
+          key: gauravi-data-${{ github.run_id }}
+
+      - name: Build customer verification demo
+        run: python build_demo.py --data-dir "dist/${{ steps.ver.outputs.version }}"
+
+      - name: Commit demo page (published by the weekly Pages deploy)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add outputs/demo
+          if git diff --staged --quiet; then
+            echo "Demo unchanged"
+          else
+            git commit -m "Dataset demo refresh ${{ steps.ver.outputs.version }}"
+            for attempt in 1 2 3; do
+              git push && break
+              git pull --rebase --autostash origin main
+              [ "$attempt" = "3" ] && { echo "::error::push failed"; exit 1; }
+            done
+          fi
+
+      - name: Package
+        id: pkg
+        env:
+          V: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          for variant in "$V" "$V-sample"; do
+            stage="pkg/gauravi-nse-factors-$variant"
+            mkdir -p "$stage"
+            cp -r "dist/$variant/." "$stage/"
+            # Ship the loader and its docs inside the zip -- a parquet file with
+            # no reader and no dictionary generates support tickets.
+            cp -r gauravi_data "$stage/gauravi_data"
+            rm -rf "$stage/gauravi_data/__pycache__"
+            cp build_demo.py "$stage/build_demo.py"
+            [ -f outputs/demo/demo.html ] && cp outputs/demo/demo.html "$stage/verification.html" || true
+            cp gauravi_data/README.md "$stage/README.md"
+            [ -f LICENSE-DATA.txt ] && cp LICENSE-DATA.txt "$stage/LICENSE.txt" || true
+            (cd pkg && zip -qr "gauravi-nse-factors-$variant.zip" "gauravi-nse-factors-$variant")
+          done
+          ls -lh pkg/*.zip
+
+      - name: Verify the packaged zip actually loads
+        env:
+          V: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          rm -rf verify && mkdir verify
+          unzip -q "pkg/gauravi-nse-factors-$V.zip" -d verify
+          cd "verify/gauravi-nse-factors-$V"
+          python - <<'PY'
+          import gauravi_data as gd
+          m = gd.manifest()
+          assert all(v["passed"] for v in m["validation"].values()), m["validation"]
+          panel, factors = gd.load_panel(), gd.load_factors()
+          assert len(panel) and len(factors), "empty tables"
+          assert "deliv_pct" in panel.columns and "score_mr" in factors.columns
+          cov = panel["deliv_pct"].notna().mean()
+          assert cov > 0.85, f"delivery coverage regressed to {cov:.0%}"
+          print(f"OK {m['version']}: {m['n_symbols']} symbols, "
+                f"{m['date_min']}->{m['date_max']}, delivery {cov:.0%}")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dataset-${{ steps.ver.outputs.version }}
+          path: pkg/*.zip
+          retention-days: 90
+
+      - name: Publish GitHub Release
+        if: ${{ inputs.publish != false }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          V: ${{ steps.ver.outputs.version }}
+        run: |
+          set -euo pipefail
+          notes=$(python - <<'PY'
+          import json
+          m = json.load(open("dist/" + __import__("os").environ["V"] + "/MANIFEST.json"))
+          print(f"Gauravi NSE Factor Dataset `{m['version']}`\n")
+          print(f"- {m['n_symbols']} symbols | {m['date_min']} to {m['date_max']} "
+                f"| horizon {m['horizon_days']}d")
+          print(f"- rows: {m['rows']['panel']:,} panel / {m['rows']['factors']:,} factors")
+          print("- all validation gates passed\n")
+          print("| file | size MB | sha256 (16) |\n|---|---|---|")
+          for fn, sha in m["checksums"].items():
+              print(f"| `{fn}` | {m['size_mb'][fn]} | `{sha}` |")
+          print("\nResearch data only -- not investment advice, not a signal service.")
+          PY
+          )
+          if gh release view "data-$V" >/dev/null 2>&1; then
+            gh release upload "data-$V" pkg/*.zip --clobber
+          else
+            gh release create "data-$V" pkg/*.zip \
+              --title "Dataset $V" --notes "$notes"
+          fi

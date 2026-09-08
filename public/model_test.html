@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gauravi — NIFTY-100 Model Test Bench</title>
+<style>
+:root{--bg:#0d1117;--card:#161b22;--line:#30363d;--fg:#e6edf3;--mut:#8b949e;
+--blue:#58a6ff;--grn:#3fb950;--red:#f85149;--amber:#d29922}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;
+margin:0;padding:28px 18px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto}
+h1{font-size:1.5rem;margin:0 0 4px}
+.sub{color:var(--mut);margin-bottom:18px;font-size:.9rem}
+.banner{background:#1c1408;border:1px solid var(--amber);border-radius:8px;
+padding:10px 14px;font-size:.82rem;color:#e3c37a;margin-bottom:20px}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;
+background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:20px}
+.ctl{display:flex;flex-direction:column;gap:4px}
+.ctl label{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+select,input{background:#0d1117;color:var(--fg);border:1px solid var(--line);
+border-radius:6px;padding:8px 10px;font-size:.9rem;min-width:150px}
+input{min-width:220px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;
+padding:20px;margin-bottom:20px;display:none}
+.card.show{display:block}
+.card-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.card-head .nm{font-size:1.25rem;font-weight:600}
+.card-head .sym{color:var(--mut);font-size:.9rem}
+.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:700;font-size:.85rem}
+.badge.LONG{background:rgba(63,185,80,.15);color:var(--grn);border:1px solid var(--grn)}
+.badge.SHORT{background:rgba(248,81,73,.15);color:var(--red);border:1px solid var(--red)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-top:16px}
+.metric{background:#0d1117;border:1px solid var(--line);border-radius:8px;padding:12px}
+.metric .k{font-size:.72rem;color:var(--mut);text-transform:uppercase;letter-spacing:.03em}
+.metric .v{font-size:1.5rem;font-weight:700;margin-top:2px}
+.metric .n{font-size:.72rem;color:var(--mut)}
+.bar{height:8px;background:#0d1117;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:6px}
+.bar>span{display:block;height:100%;background:var(--blue)}
+.usum{color:var(--mut);font-size:.85rem;margin-bottom:10px}
+.usum b{color:var(--fg)}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th,td{padding:8px 9px;border:1px solid var(--line);text-align:right}
+th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){text-align:left}
+th{background:#21262d;cursor:pointer;user-select:none;white-space:nowrap}
+th.sort-asc::after{content:" ▲"}th.sort-desc::after{content:" ▼"}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:#1c2128}
+tbody tr.sel{background:#1f2d3d}
+td.LONG{color:var(--grn);font-weight:600}td.SHORT{color:var(--red);font-weight:600}
+.disc{color:var(--mut);font-size:.75rem;margin-top:22px;border-top:1px solid var(--line);padding-top:12px}
+.err{color:var(--red);padding:20px;border:1px solid var(--red);border-radius:8px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Gauravi <span style="color:var(--mut);font-weight:400;font-size:1rem">· NIFTY-100 Model Test Bench</span></h1>
+<div class="sub" id="sub">Loading…</div>
+<div style="margin-bottom:14px"><a href="./index.html" style="color:var(--blue);font-size:.85rem;text-decoration:none">← Gauravi weekly rankings</a></div>
+<div class="banner" id="banner">
+Honest test bench. Accuracy is the historical directional hit-rate computed from
+<b>real price data</b> over the sample period — nothing is fabricated. The meaningful
+number is <b>Excess-vs-NIFTY</b> accuracy (baseline ≈ 50%); plain up/down accuracy is
+shown only next to its up-rate baseline because a rising market inflates it.
+</div>
+
+<div class="controls">
+  <div class="ctl">
+    <label for="model">Model</label>
+    <select id="model"></select>
+  </div>
+  <div class="ctl">
+    <label for="horizon">Horizon (trading days)</label>
+    <select id="horizon"></select>
+  </div>
+  <div class="ctl">
+    <label for="basis">Accuracy basis</label>
+    <select id="basis">
+      <option value="excess">Excess vs NIFTY (honest edge)</option>
+      <option value="abs">Absolute up/down (+ baseline)</option>
+    </select>
+  </div>
+  <div class="ctl" style="flex:1">
+    <label for="search">Pick a NIFTY-100 stock</label>
+    <input id="search" list="stocklist" placeholder="Type a symbol or name, e.g. RELIANCE">
+    <datalist id="stocklist"></datalist>
+  </div>
+</div>
+
+<div class="card" id="card">
+  <div class="card-head">
+    <div>
+      <span class="nm" id="c-name"></span>
+      <span class="sym" id="c-sym"></span>
+    </div>
+    <span class="badge" id="c-dir"></span>
+  </div>
+  <div class="metrics" id="c-metrics"></div>
+</div>
+
+<div class="usum" id="usum"></div>
+<table id="tbl">
+  <thead><tr>
+    <th data-k="rank">Rank</th>
+    <th data-k="sym">Symbol</th>
+    <th data-k="name">Company</th>
+    <th data-k="direction">Signal</th>
+    <th data-k="score_pctile">Score %ile</th>
+    <th data-k="acc">Accuracy %</th>
+    <th data-k="base">Baseline %</th>
+    <th data-k="n">n</th>
+  </tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<div class="disc" id="disc"></div>
+</div>
+<script src="./model_test_data.js"></script>
+<script>
+const D = window.MODEL_TEST_DATA;
+const $ = id => document.getElementById(id);
+
+if (!D || !D.stocks) {
+  $("sub").innerHTML = '<div class="err">model_test_data.js not found or empty. '
+    + 'Run <code>python build_model_test.py</code> first, then open the copy in '
+    + 'outputs/model_test/.</div>';
+  throw new Error("no data");
+}
+
+const state = { model: D.models[0], horizon: String(D.horizons[0]),
+                basis: "excess", sel: null, sortKey: "rank", sortDir: 1 };
+
+// --- populate controls -----------------------------------------------------
+D.models.forEach(m => {
+  const o = document.createElement("option");
+  o.value = m; o.textContent = m.charAt(0).toUpperCase() + m.slice(1);
+  $("model").appendChild(o);
+});
+D.horizons.forEach(h => {
+  const o = document.createElement("option");
+  o.value = String(h); o.textContent = h + "d"; $("horizon").appendChild(o);
+});
+
+const syms = Object.keys(D.stocks).sort();
+syms.forEach(s => {
+  const o = document.createElement("option");
+  o.value = s; o.label = D.stocks[s].name; $("stocklist").appendChild(o);
+});
+
+$("sub").textContent =
+  `As of ${D.as_of} · period ${D.period} · universe ${D.universe_size} stocks · `
+  + `generated ${D.generated_at.replace("T", " ")}`;
+
+// --- helpers ----------------------------------------------------------------
+function cell(sym) {           // the {..} bucket for current model+horizon
+  const st = D.stocks[sym];
+  const by = st && st.by && st.by[state.model];
+  return by ? by[state.horizon] : null;
+}
+function accOf(c) {            // accuracy under current basis
+  if (!c) return null;
+  return state.basis === "excess" ? c.acc_excess_pct : c.acc_abs_pct;
+}
+function baseOf(c) {           // baseline for that accuracy
+  if (!c) return null;
+  return state.basis === "excess" ? 50.0 : c.up_rate_pct;
+}
+const fmt = v => (v === null || v === undefined) ? "n/a" : v + "%";
+
+// --- prediction card --------------------------------------------------------
+function renderCard() {
+  const card = $("card");
+  if (!state.sel) { card.classList.remove("show"); return; }
+  const st = D.stocks[state.sel], c = cell(state.sel);
+  $("c-name").textContent = st.name;
+  $("c-sym").textContent = " · " + state.sel;
+  const dir = c ? c.direction : "—";
+  const b = $("c-dir"); b.textContent = dir; b.className = "badge " + dir;
+  if (!c) { $("c-metrics").innerHTML =
+      '<div class="metric"><div class="k">No data</div>'
+      + '<div class="v">—</div><div class="n">model has no history for this stock</div></div>';
+    card.classList.add("show"); return; }
+  const acc = accOf(c), base = baseOf(c);
+  const edge = (acc !== null && base !== null) ? (acc - base).toFixed(1) : "—";
+  const edgeColor = (acc !== null && base !== null && acc - base >= 0)
+                    ? "var(--grn)" : "var(--red)";
+  $("c-metrics").innerHTML = `
+    <div class="metric"><div class="k">Score percentile</div>
+      <div class="v">${(c.score_pctile*100).toFixed(1)}%</div>
+      <div class="bar"><span style="width:${(c.score_pctile*100).toFixed(1)}%"></span></div>
+      <div class="n">1.0 = strongest ${state.model} signal in universe</div></div>
+    <div class="metric"><div class="k">Universe rank</div>
+      <div class="v">#${c.rank}</div><div class="n">of ${c.universe} stocks</div></div>
+    <div class="metric"><div class="k">${state.basis==="excess"?"Accuracy (excess vs NIFTY)":"Accuracy (absolute)"}</div>
+      <div class="v">${fmt(acc)}</div>
+      <div class="n">baseline ${fmt(base)} · ${c.n} obs</div></div>
+    <div class="metric"><div class="k">Edge over baseline</div>
+      <div class="v" style="color:${edgeColor}">${edge === "—" ? "—" : (edge>=0?"+":"")+edge+" pp"}</div>
+      <div class="n">accuracy minus baseline</div></div>`;
+  card.classList.add("show");
+}
+
+// --- universe summary + table ----------------------------------------------
+function renderUniverse() {
+  const ua = D.universe_accuracy[state.model][state.horizon] || {};
+  const acc = state.basis === "excess" ? ua.acc_excess_pct : ua.acc_abs_pct;
+  const base = state.basis === "excess" ? 50.0 : ua.up_rate_pct;
+  $("usum").innerHTML =
+    `Universe-wide <b>${state.model}</b> @ <b>${state.horizon}d</b> · `
+    + `${state.basis==="excess"?"excess-vs-NIFTY":"absolute"} accuracy `
+    + `<b>${fmt(acc)}</b> (baseline ${fmt(base)}) over <b>${(ua.n||0).toLocaleString()}</b> stock-days. `
+    + `Click a row to load its prediction above.`;
+}
+
+function rowData() {
+  return syms.map(s => {
+    const c = cell(s), st = D.stocks[s];
+    return { sym: s, name: st.name,
+             rank: c ? c.rank : Infinity,
+             direction: c ? c.direction : "—",
+             score_pctile: c ? c.score_pctile : -1,
+             acc: accOf(c), base: baseOf(c), n: c ? c.n : 0 };
+  });
+}
+
+function renderTable() {
+  const rows = rowData();
+  const k = state.sortKey, dir = state.sortDir;
+  rows.sort((a, b) => {
+    let x = a[k], y = b[k];
+    if (x === null) x = -Infinity; if (y === null) y = -Infinity;
+    if (typeof x === "string") return dir * x.localeCompare(y);
+    return dir * (x - y);
+  });
+  const tb = $("tbody"); tb.innerHTML = "";
+  rows.forEach(r => {
+    const tr = document.createElement("tr");
+    if (r.sym === state.sel) tr.className = "sel";
+    tr.innerHTML =
+      `<td>${r.rank === Infinity ? "—" : r.rank}</td>`
+      + `<td><b>${r.sym}</b></td><td>${r.name}</td>`
+      + `<td class="${r.direction}">${r.direction}</td>`
+      + `<td>${r.score_pctile < 0 ? "—" : (r.score_pctile*100).toFixed(1)+"%"}</td>`
+      + `<td>${fmt(r.acc)}</td><td>${fmt(r.base)}</td><td>${r.n}</td>`;
+    tr.onclick = () => { state.sel = r.sym; $("search").value = r.sym;
+                         renderCard(); renderTable(); };
+    tb.appendChild(tr);
+  });
+  document.querySelectorAll("th").forEach(th => {
+    th.classList.remove("sort-asc", "sort-desc");
+    if (th.dataset.k === k) th.classList.add(dir === 1 ? "sort-asc" : "sort-desc");
+  });
+}
+
+function renderAll() { renderUniverse(); renderCard(); renderTable(); }
+
+// --- wire events ------------------------------------------------------------
+$("model").onchange   = e => { state.model = e.target.value; renderAll(); };
+$("horizon").onchange = e => { state.horizon = e.target.value; renderAll(); };
+$("basis").onchange   = e => { state.basis = e.target.value; renderAll(); };
+$("search").onchange  = e => {
+  const v = e.target.value.trim().toUpperCase();
+  if (D.stocks[v]) { state.sel = v; renderCard(); renderTable(); }
+};
+document.querySelectorAll("th").forEach(th => {
+  th.onclick = () => {
+    const k = th.dataset.k;
+    if (state.sortKey === k) state.sortDir *= -1;
+    else { state.sortKey = k; state.sortDir = (k === "rank" || k === "sym" || k === "name") ? 1 : -1; }
+    renderTable();
+  };
+});
+
+$("disc").innerHTML =
+  "Research/education only — not investment advice. Accuracy = share of past "
+  + "observations where the model's LONG/SHORT call matched the realized "
+  + "direction, computed from real historical prices over the sample. "
+  + "Historical validation shows only a ~50–51% directional edge (AUC ≈ 0.51); "
+  + "expect roughly half of individual calls to be wrong. Per-stock figures rest "
+  + "on small samples (see n) and will not repeat exactly out of sample.";
+
+renderAll();
+</script>
+</body>
+</html>
