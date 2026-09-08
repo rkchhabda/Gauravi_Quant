@@ -1,11 +1,10 @@
 services:
   - type: web
     name: gauravi-trading-system
-    env: python
+    env: docker
     plan: free
-    buildCommand: "bash build.sh"
-    startCommand: "python server.py"
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.0
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
