@@ -9,13 +9,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy and install Python dependencies
+# Copy and install Python dependencies first (for better caching)
 COPY requirements-render.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements-render.txt
 
 # Copy application code
-COPY . .
+COPY server.py .
+COPY stock_analyzer.py .
+COPY daily_scheduler.py .
+COPY paper_trading.py .
+COPY macro_utils.py .
+COPY alerts/ ./alerts/
+COPY stocks.txt .
 
 EXPOSE 8000
 
