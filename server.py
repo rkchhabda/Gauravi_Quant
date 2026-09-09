@@ -12,13 +12,11 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+# Lightweight imports only
 from stock_analyzer import MarketAdvisor, ReportGenerator
-from daily_scheduler import run_daily_predictions, PRODUCTION_STOCKS
-from paper_trading import PaperTradingSimulator
 
 app = FastAPI(title="Gauravi Trading System", version="1.0.0")
 
@@ -172,7 +170,12 @@ async def api_stocks_list():
     """Get list of available stocks"""
     ticker_file = BASE_DIR / "stocks.txt"
     if not ticker_file.exists():
-        return {"stocks": list(PRODUCTION_STOCKS.keys())}
+        # Fallback - lazy load PRODUCTION_STOCKS
+        try:
+            from daily_scheduler import PRODUCTION_STOCKS
+            return {"stocks": list(PRODUCTION_STOCKS.keys())}
+        except ImportError:
+            return {"stocks": []}
     
     with open(ticker_file) as f:
         stocks = [line.strip() for line in f if line.strip() and not line.startswith("#")]
@@ -207,13 +210,17 @@ async def api_paper_trading_status():
     
     if _paper_trading_cache["data"] is None or \
        (datetime.now() - datetime.fromisoformat(_paper_trading_cache["timestamp"])).seconds > 60:
-        sim = PaperTradingSimulator()
-        sim.check_positions()
-        report = sim.get_performance_report()
-        _paper_trading_cache = {
-            "data": report,
-            "timestamp": datetime.now().isoformat()
-        }
+        try:
+            from paper_trading import PaperTradingSimulator
+            sim = PaperTradingSimulator()
+            sim.check_positions()
+            report = sim.get_performance_report()
+            _paper_trading_cache = {
+                "data": report,
+                "timestamp": datetime.now().isoformat()
+            }
+        except ImportError:
+            return {"error": "Paper trading module not available"}
     
     return _paper_trading_cache["data"]
 
@@ -221,20 +228,25 @@ async def api_paper_trading_status():
 @app.post("/api/paper-trading/check")
 async def api_paper_trading_check():
     """Check paper trading positions for SL/TP hits"""
-    sim = PaperTradingSimulator()
-    sim.check_positions()
-    report = sim.get_performance_report()
-    return report
+    try:
+        from paper_trading import PaperTradingSimulator
+        sim = PaperTradingSimulator()
+        sim.check_positions()
+        report = sim.get_performance_report()
+        return report
+    except ImportError:
+        raise HTTPException(status_code=503, detail="Paper trading module not available")
 
 
 @app.post("/api/daily-predictions/run")
 async def api_run_daily_predictions(paper_trade: bool = False):
     """Run daily predictions for all production stocks"""
     try:
+        from daily_scheduler import run_daily_predictions
         results = run_daily_predictions(paper_trade=paper_trade)
         return {"status": "success", "results": results}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except ImportError:
+        raise HTTPException(status_code=503, detail="Daily predictions module not available (requires ML dependencies)")
 
 
 @app.get("/api/health")
@@ -243,4 +255,4 @@ async def health_check():
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")

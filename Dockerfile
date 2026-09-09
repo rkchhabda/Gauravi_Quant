@@ -20,6 +20,7 @@ COPY stock_analyzer.py .
 COPY daily_scheduler.py .
 COPY paper_trading.py .
 COPY macro_utils.py .
+COPY daily_kronos_pipeline.py .
 COPY alerts/ ./alerts/
 COPY stocks.txt .
 
