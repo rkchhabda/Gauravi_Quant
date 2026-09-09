@@ -14,13 +14,12 @@ COPY requirements-render.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements-render.txt
 
-# Copy application code
+# Copy application code (only lightweight modules needed for dashboard)
 COPY server.py .
 COPY stock_analyzer.py .
 COPY daily_scheduler.py .
 COPY paper_trading.py .
 COPY macro_utils.py .
-COPY daily_kronos_pipeline.py .
 COPY alerts/ ./alerts/
 COPY stocks.txt .
 
