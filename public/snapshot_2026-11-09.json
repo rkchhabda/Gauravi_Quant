@@ -1,0 +1,376 @@
+{
+  "generated_at": "2026-11-09T11:58:46.662379",
+  "as_of": "2026-11-09",
+  "model": "blend(mom_12_1 rank + reversal rank), v1",
+  "universe_size": 99,
+  "fii_dii": {
+    "source": "csv",
+    "date": "2026-08-22",
+    "fii_net_cr": -1247.5,
+    "dii_net_cr": 2891.2
+  },
+  "top": [
+    {
+      "rank": 1,
+      "symbol": "BALRAMCHIN",
+      "close": 658.4,
+      "mom_12_1_pct": 51.4,
+      "ret20_pct": -2.9,
+      "score": 0.955,
+      "earnings_soon": false
+    },
+    {
+      "rank": 2,
+      "symbol": "CUMMINSIND",
+      "close": 4135.2,
+      "mom_12_1_pct": 10.5,
+      "ret20_pct": -14.4,
+      "score": 0.939,
+      "earnings_soon": false
+    },
+    {
+      "rank": 3,
+      "symbol": "NESTLEIND",
+      "close": 1297.8,
+      "mom_12_1_pct": 4.8,
+      "ret20_pct": -2.6,
+      "score": 0.864,
+      "earnings_soon": true
+    },
+    {
+      "rank": 4,
+      "symbol": "M&MFIN",
+      "close": 280.2,
+      "mom_12_1_pct": 0.6,
+      "ret20_pct": -12.3,
+      "score": 0.859,
+      "earnings_soon": true
+    },
+    {
+      "rank": 5,
+      "symbol": "COALINDIA",
+      "close": 401.5,
+      "mom_12_1_pct": 12.5,
+      "ret20_pct": 0.1,
+      "score": 0.838,
+      "earnings_soon": true
+    },
+    {
+      "rank": 6,
+      "symbol": "EXIDEIND",
+      "close": 385.0,
+      "mom_12_1_pct": 3.9,
+      "ret20_pct": -2.4,
+      "score": 0.838,
+      "earnings_soon": false
+    },
+    {
+      "rank": 7,
+      "symbol": "SIEMENS",
+      "close": 3655.0,
+      "mom_12_1_pct": 17.0,
+      "ret20_pct": 1.7,
+      "score": 0.833,
+      "earnings_soon": false
+    },
+    {
+      "rank": 8,
+      "symbol": "FEDERALBNK",
+      "close": 344.1,
+      "mom_12_1_pct": 36.1,
+      "ret20_pct": 4.3,
+      "score": 0.828,
+      "earnings_soon": false
+    },
+    {
+      "rank": 9,
+      "symbol": "NYKAA",
+      "close": 359.7,
+      "mom_12_1_pct": 34.0,
+      "ret20_pct": 4.9,
+      "score": 0.798,
+      "earnings_soon": false
+    },
+    {
+      "rank": 10,
+      "symbol": "ASTRAL",
+      "close": 1272.8,
+      "mom_12_1_pct": -2.6,
+      "ret20_pct": -9.7,
+      "score": 0.798,
+      "earnings_soon": false
+    },
+    {
+      "rank": 11,
+      "symbol": "INDUSINDBK",
+      "close": 895.0,
+      "mom_12_1_pct": 8.9,
+      "ret20_pct": 3.9,
+      "score": 0.793,
+      "earnings_soon": false
+    },
+    {
+      "rank": 12,
+      "symbol": "ADANIENT",
+      "close": 2706.3,
+      "mom_12_1_pct": 4.7,
+      "ret20_pct": 2.7,
+      "score": 0.773,
+      "earnings_soon": false
+    },
+    {
+      "rank": 13,
+      "symbol": "IDFCFIRSTB",
+      "close": 77.9,
+      "mom_12_1_pct": -3.8,
+      "ret20_pct": -2.1,
+      "score": 0.747,
+      "earnings_soon": false
+    },
+    {
+      "rank": 14,
+      "symbol": "DEEPAKNTR",
+      "close": 1540.0,
+      "mom_12_1_pct": -7.9,
+      "ret20_pct": -5.0,
+      "score": 0.732,
+      "earnings_soon": false
+    },
+    {
+      "rank": 15,
+      "symbol": "NMDC",
+      "close": 71.5,
+      "mom_12_1_pct": -2.6,
+      "ret20_pct": -0.4,
+      "score": 0.732,
+      "earnings_soon": true
+    },
+    {
+      "rank": 16,
+      "symbol": "AXISBANK",
+      "close": 1310.7,
+      "mom_12_1_pct": 1.1,
+      "ret20_pct": 4.1,
+      "score": 0.717,
+      "earnings_soon": true
+    },
+    {
+      "rank": 17,
+      "symbol": "HINDALCO",
+      "close": 960.0,
+      "mom_12_1_pct": 5.5,
+      "ret20_pct": 6.6,
+      "score": 0.702,
+      "earnings_soon": true
+    },
+    {
+      "rank": 18,
+      "symbol": "LICHSGFIN",
+      "close": 551.9,
+      "mom_12_1_pct": -4.1,
+      "ret20_pct": 0.0,
+      "score": 0.697,
+      "earnings_soon": false
+    },
+    {
+      "rank": 19,
+      "symbol": "PAYTM",
+      "close": 1788.0,
+      "mom_12_1_pct": 26.0,
+      "ret20_pct": 9.3,
+      "score": 0.692,
+      "earnings_soon": true
+    },
+    {
+      "rank": 20,
+      "symbol": "PAGEIND",
+      "close": 36380.0,
+      "mom_12_1_pct": -9.5,
+      "ret20_pct": -1.3,
+      "score": 0.677,
+      "earnings_soon": true
+    }
+  ],
+  "bottom": [
+    {
+      "rank": 99,
+      "symbol": "TATAELXSI",
+      "close": 3889.9,
+      "mom_12_1_pct": -44.1,
+      "ret20_pct": 24.3,
+      "score": 0.025,
+      "earnings_soon": false
+    },
+    {
+      "rank": 98,
+      "symbol": "WIPRO",
+      "close": 199.0,
+      "mom_12_1_pct": -31.7,
+      "ret20_pct": 22.4,
+      "score": 0.076,
+      "earnings_soon": false
+    },
+    {
+      "rank": 97,
+      "symbol": "GHCL",
+      "close": 450.6,
+      "mom_12_1_pct": -37.8,
+      "ret20_pct": 16.7,
+      "score": 0.086,
+      "earnings_soon": false
+    },
+    {
+      "rank": 96,
+      "symbol": "GODREJPROP",
+      "close": 1814.6,
+      "mom_12_1_pct": -32.6,
+      "ret20_pct": 17.1,
+      "score": 0.096,
+      "earnings_soon": true
+    },
+    {
+      "rank": 95,
+      "symbol": "LTTS",
+      "close": 4202.2,
+      "mom_12_1_pct": -22.0,
+      "ret20_pct": 29.1,
+      "score": 0.111,
+      "earnings_soon": false
+    },
+    {
+      "rank": 94,
+      "symbol": "INFY",
+      "close": 1154.1,
+      "mom_12_1_pct": -31.3,
+      "ret20_pct": 15.4,
+      "score": 0.146,
+      "earnings_soon": false
+    },
+    {
+      "rank": 93,
+      "symbol": "TCS",
+      "close": 2475.4,
+      "mom_12_1_pct": -29.6,
+      "ret20_pct": 15.4,
+      "score": 0.152,
+      "earnings_soon": true
+    },
+    {
+      "rank": 92,
+      "symbol": "M&M",
+      "close": 3290.6,
+      "mom_12_1_pct": -20.3,
+      "ret20_pct": 17.7,
+      "score": 0.167,
+      "earnings_soon": true
+    },
+    {
+      "rank": 91,
+      "symbol": "HCLTECH",
+      "close": 1407.0,
+      "mom_12_1_pct": -20.8,
+      "ret20_pct": 16.7,
+      "score": 0.172,
+      "earnings_soon": false
+    },
+    {
+      "rank": 90,
+      "symbol": "MARUTI",
+      "close": 12928.0,
+      "mom_12_1_pct": -29.9,
+      "ret20_pct": 13.2,
+      "score": 0.202,
+      "earnings_soon": false
+    },
+    {
+      "rank": 89,
+      "symbol": "AMBUJACEM",
+      "close": 389.5,
+      "mom_12_1_pct": -39.4,
+      "ret20_pct": 10.8,
+      "score": 0.202,
+      "earnings_soon": false
+    },
+    {
+      "rank": 88,
+      "symbol": "IOC",
+      "close": 146.9,
+      "mom_12_1_pct": -19.9,
+      "ret20_pct": 16.2,
+      "score": 0.202,
+      "earnings_soon": true
+    },
+    {
+      "rank": 87,
+      "symbol": "HAVELLS",
+      "close": 1159.5,
+      "mom_12_1_pct": -30.9,
+      "ret20_pct": 11.3,
+      "score": 0.232,
+      "earnings_soon": true
+    },
+    {
+      "rank": 86,
+      "symbol": "HDFCBANK",
+      "close": 798.2,
+      "mom_12_1_pct": -28.7,
+      "ret20_pct": 12.9,
+      "score": 0.237,
+      "earnings_soon": false
+    },
+    {
+      "rank": 85,
+      "symbol": "DLF",
+      "close": 755.0,
+      "mom_12_1_pct": -14.7,
+      "ret20_pct": 16.4,
+      "score": 0.247,
+      "earnings_soon": false
+    },
+    {
+      "rank": 84,
+      "symbol": "SHREECEM",
+      "close": 24920.0,
+      "mom_12_1_pct": -23.3,
+      "ret20_pct": 12.9,
+      "score": 0.253,
+      "earnings_soon": true
+    },
+    {
+      "rank": 83,
+      "symbol": "PRESTIGE",
+      "close": 1597.5,
+      "mom_12_1_pct": -19.0,
+      "ret20_pct": 13.6,
+      "score": 0.258,
+      "earnings_soon": false
+    },
+    {
+      "rank": 82,
+      "symbol": "RELIANCE",
+      "close": 1324.4,
+      "mom_12_1_pct": -20.4,
+      "ret20_pct": 13.2,
+      "score": 0.263,
+      "earnings_soon": false
+    },
+    {
+      "rank": 81,
+      "symbol": "TATACONSUM",
+      "close": 1083.9,
+      "mom_12_1_pct": -17.6,
+      "ret20_pct": 13.5,
+      "score": 0.283,
+      "earnings_soon": false
+    },
+    {
+      "rank": 80,
+      "symbol": "TRENT",
+      "close": 3119.2,
+      "mom_12_1_pct": -38.6,
+      "ret20_pct": 6.9,
+      "score": 0.303,
+      "earnings_soon": true
+    }
+  ]
+}
